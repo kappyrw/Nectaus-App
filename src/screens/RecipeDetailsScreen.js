@@ -17,7 +17,7 @@ const RecipeDetailsScreen = ({ navigation, route }) => {
 	console.log(item);
 	return (
 		<View style={{ backgroundColor: item.color, flex: 1 }}>
-			<SafeAreaView style={{ flexDirection: "row", marginHorizontal: 16 }}>
+			<SafeAreaView style={{ flexDirection: "row", marginHorizontal: 16, marginTop:70 }}>
 				<Pressable style={{ flex: 1 }} onPress={() => navigation.goBack()}>
 					<FontAwesome name={"arrow-circle-left"} size={28} color="white" />
 				</Pressable>

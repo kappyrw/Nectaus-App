@@ -5,7 +5,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import RecipeListScreen from "../screens/RecipeListScreen";
 import RecipeDetailsScreen from "../screens/RecipeDetailsScreen";
-
+import Login from "../screens/Login";
+import Signup from "../screens/Signup";
+import AdminDashboard from "../screens/AdminDashboard";
+import UserDashboard from "../screens/UserDashboard";
+import { FontAwesome } from "@expo/vector-icons";
+import SignupSuccess from "../screens/SignupSuccess";
+import ChatScreen from "../screens/ChatScreen";
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
 	return (
@@ -14,6 +20,12 @@ const AppNavigator = () => {
 				<Stack.Screen name="Welcome" component={WelcomeScreen} />
 				<Stack.Screen name="RecipeList" component={RecipeListScreen} />
 				<Stack.Screen name="RecipeDetail" component={RecipeDetailsScreen} />
+				<Stack.Screen name="Login" component={Login}/>
+				<Stack.Screen name="Signup" component={Signup}/>
+				<Stack.Screen name="AdminDashboard" component={AdminDashboard}/>
+				<Stack.Screen name="UserDashboard" component={UserDashboard}/>
+				<Stack.Screen name="SignupSuccess" component={SignupSuccess}/>
+				<Stack.Screen name="ChatScreen" component={ChatScreen}/>
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
