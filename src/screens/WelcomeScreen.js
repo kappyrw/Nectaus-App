@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 const WelcomeScreen = ({ navigation }) => {
   const handleExplore = () => {
@@ -27,6 +28,25 @@ const WelcomeScreen = ({ navigation }) => {
         <TouchableOpacity onPress={handleExplore} style={styles.exploreButton}>
           <Text style={styles.buttonText}>Explore more</Text>
         </TouchableOpacity>
+
+        <View style={styles.socialIcons}>
+          <TouchableOpacity style={styles.iconButton}>
+            <FontAwesome5 name="facebook" size={30} color="#3b5998" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <FontAwesome5 name="twitter" size={30} color="#1da1f2" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <FontAwesome5 name="instagram" size={30} color="#e4405f" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+          <FontAwesome5 name="tiktok" size={30} color="#69c9d0" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconButton}>
+          <FontAwesome5 name="youtube" size={30} color="#ff0000" />
+        </TouchableOpacity>
+          {/* Add more social media icons as needed */}
+        </View>
       </View>
     </View>
   );
@@ -79,6 +99,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#fff",
     fontWeight: "500",
+  },
+  socialIcons: {
+    flexDirection: "row",
+    marginTop: 3,
+    marginBottom:50
+  },
+  iconButton: {
+    marginHorizontal: 10,
   },
 });
 

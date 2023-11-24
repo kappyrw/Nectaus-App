@@ -12,6 +12,13 @@ import UserDashboard from "../screens/UserDashboard";
 import { FontAwesome } from "@expo/vector-icons";
 import SignupSuccess from "../screens/SignupSuccess";
 import ChatScreen from "../screens/ChatScreen";
+import AdminNewsScreen from '../screens/AdminNewsScreen';
+import AnalyticsScreen from "../screens/AnalyticsScreen";
+
+
+
+
+ 
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
 	return (
@@ -26,6 +33,8 @@ const AppNavigator = () => {
 				<Stack.Screen name="UserDashboard" component={UserDashboard}/>
 				<Stack.Screen name="SignupSuccess" component={SignupSuccess}/>
 				<Stack.Screen name="ChatScreen" component={ChatScreen}/>
+				<Stack.Screen name="AdminNewsScreen" component={AdminNewsScreen}/>
+				<Stack.Screen name="AnalyticsScreen" component={AnalyticsScreen}/>
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

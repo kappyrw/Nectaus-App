@@ -17,6 +17,8 @@ const AdminDashboard = ({ navigation }) => {
   const viewAnalytics = () => {
     // Functionality to view analytics
     // navigation.navigate('ViewAnalytics') or perform actions related to analytics
+    navigation.navigate('AnalyticsScreen');
+
   };
 
   const handleUpdates = () => {

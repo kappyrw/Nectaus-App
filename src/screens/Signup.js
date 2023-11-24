@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet ,Image} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Signup = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignup = () => {
     if (!username || !email || !password || !confirmPassword) {
@@ -18,16 +21,26 @@ const Signup = ({ navigation }) => {
       alert('Passwords must be at least 5 characters long.');
       return;
     }
-    navigation.navigate('SignupSuccess' , { username });
+    navigation.navigate('SignupSuccess', { username });
 
     // Logic to handle signup, validate input, create account, etc.
     // You can add your validation or account creation logic here.
   };
 
+  const handleIncrement = () => {
+    // Increment the phone number
+    setPhone((prevPhone) => (prevPhone === '' ? '1' : (parseInt(prevPhone) + 1).toString()));
+  };
+
+  const handleDecrement = () => {
+    // Decrement the phone number, ensuring it doesn't go below 0
+    setPhone((prevPhone) =>
+      prevPhone === '' || parseInt(prevPhone) === 0 ? '' : (parseInt(prevPhone) - 1).toString()
+    );
+  };
+
   return (
-    
     <View style={styles.container}>
-     
       <Text style={styles.title}>Create an Account 🐝</Text>
       <TextInput
         style={styles.input}
@@ -41,17 +54,44 @@ const Signup = ({ navigation }) => {
         value={email}
         onChangeText={(text) => setEmail(text)}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry={true}
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-      />
+      <View style={styles.phoneContainer}>
+        <TouchableOpacity style={styles.phoneButton} onPress={handleDecrement}>
+          <MaterialCommunityIcons name="minus" size={24} color="black" />
+        </TouchableOpacity>
+        <TextInput
+          style={styles.phoneInput}
+          placeholder="Phone"
+          keyboardType="numeric"
+          value={phone}
+          onChangeText={(text) => setPhone(text)}
+        />
+        <TouchableOpacity style={styles.phoneButton} onPress={handleIncrement}>
+          <MaterialCommunityIcons name="plus" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.passwordInput}
+          placeholder="Password"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+        />
+        <TouchableOpacity
+          style={styles.eyeIcon}
+          onPress={() => setShowPassword(!showPassword)}
+        >
+          <MaterialCommunityIcons
+            name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+            size={24}
+            color="black"
+          />
+        </TouchableOpacity>
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"
-        secureTextEntry={true}
+        secureTextEntry={!showPassword}
         value={confirmPassword}
         onChangeText={(text) => setConfirmPassword(text)}
       />
@@ -81,6 +121,42 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     marginTop: 10,
+  },
+  phoneContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '80%',
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 8,
+    overflow: 'hidden', // Ensure children don't overflow the border
+  },
+  phoneButton: {
+    padding: 10,
+  },
+  phoneInput: {
+    flex: 1,
+    padding: 10,
+    fontSize: 16,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '80%',
+    marginTop: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 16,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10,
   },
   signupButton: {
     backgroundColor: '#3498db',

@@ -4,6 +4,8 @@ import React, { useState } from "react";
 const Login = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  // const [email, setEmail] =useState("");
+  
 
   const handleLogin = () => {
     if (!username || !password) {
@@ -30,10 +32,8 @@ const Login = ({ navigation }) => {
 
   const handleCreateAccount = () => {
     navigation.navigate("Signup");
-    // Add logic to navigate to the account creation screen
-    // For example, you can use navigation.navigate("CreateAccount")
-    // to navigate to a screen where the user can create a new account.
-    // Ensure you have the CreateAccount screen set up in your navigation stack.
+
+    
   };
 
   return (

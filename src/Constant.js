@@ -45,7 +45,7 @@ export const categories = [
 export const recipeList = [
 	{
 		id: "01",
-		name: "Tuna Tartar",
+		name: "Honeybees",
 		image: require("../assets/images/bee1.png"),
 		rating: "4.2",
 		ingredients: ["Fresh Tuna", "Lime Juice", "Red Onion", "Avocado"],
@@ -65,7 +65,7 @@ export const recipeList = [
 	},
 	{
 		id: "02",
-		name: "Lasagna",
+		name: "Bumblebees ",
 		image: require("../assets/images/bee4.png"),
 		rating: "3.6",
 		ingredients: [
@@ -90,7 +90,7 @@ export const recipeList = [
 	},
 	{
 		id: "03",
-		name: "Hot Dog",
+		name: "Carpenter ",
 		image: require("../assets/images/bee5.png"),
 		rating: "4.6",
 		ingredients: ["Hot Dog Buns", "Frankfurters", "Ketchup", "Mustard"],
@@ -110,7 +110,7 @@ export const recipeList = [
 	},
 	{
 		id: "04",
-		name: "Manchurian",
+		name: "Mason Bees ",
 		image: require("../assets/images/bee1.png"),
 		rating: "3.6",
 		ingredients: ["Cauliflower", "Soy Sauce", "Ginger", "Garlic"],
@@ -130,7 +130,7 @@ export const recipeList = [
 	},
 	{
 		id: "05",
-		name: "Chicken",
+		name: "Mining Bees",
 		image: require("../assets/images/bee2.png"),
 		rating: "2.2",
 		ingredients: ["Chicken Breasts", "Salt", "Black Pepper", "Olive Oil"],
@@ -151,7 +151,7 @@ export const recipeList = [
 	},
 	{
 		id: "06",
-		name: "Cupcakes",
+		name: "Sweat Bees",
 		image: require("../assets/images/bee3.png"),
 		rating: "5.0",
 		ingredients: ["Flour", "Sugar", "Eggs", "Butter"],
@@ -171,7 +171,7 @@ export const recipeList = [
 	},
 	{
 		id: "07",
-		name: "Curry",
+		name: "Leafcutter Bees",
 		image: require("../assets/images/bee1.png"),
 		rating: "4.8",
 		ingredients: ["Meat", "Curry Powder", "Coconut Milk", "Spices"],
@@ -191,9 +191,10 @@ export const recipeList = [
 			"Serve the curry with rice or bread and enjoy the deliciousness!",
 		],
 	},
+	
 	{
 		id: "08",
-		name: "Ramen",
+		name: "Leafcutter Bees",
 		image: require("../assets/images/bee4.png"),
 		rating: "4.2",
 		ingredients: ["Ramen Noodles", "Soy Sauce", "Eggs", "Vegetables"],
@@ -210,6 +211,7 @@ export const recipeList = [
 			"Boil eggs to your desired doneness, then peel and slice them.",
 			"Assemble the ramen bowls by placing cooked noodles, vegetables, and egg slices.",
 			"Ladle the hot broth over the ingredients and get ready to enjoy your homemade ramen!",
+
 		],
 		
 	},

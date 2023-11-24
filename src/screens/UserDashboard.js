@@ -11,6 +11,13 @@ const UserDashboard = ({ navigation }) => {
     // Navigate to the RecipeListScreen when the "Updates" button is clicked
     navigation.navigate('RecipeList');
   };
+  const handleNews = () => {
+    navigation.navigate('News')
+  };
+  const handleViewAnalytics = () => {
+    // Navigate to the Analytics screen
+    navigation.navigate('AnalyticsScreen');
+  }
 
   return (
     <View style={styles.container}>
@@ -28,9 +35,16 @@ const UserDashboard = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={handleRegularFunction}>
         <Text style={styles.buttonText}>User Specific Section</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleNews}>
+          <Text style={styles.buttonText}>News</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleUpdates}>
         <Text style={styles.buttonText}>Updates</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleViewAnalytics}>
+        <Text style={styles.buttonText}>View Analytics</Text>
+        </TouchableOpacity>
+        
       {/* Additional buttons or components for regular user functionalities */}
     </View>
   );
