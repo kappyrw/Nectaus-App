@@ -15,6 +15,7 @@ import ChatScreen from "../screens/ChatScreen";
 import AdminNewsScreen from '../screens/AdminNewsScreen';
 import AnalyticsScreen from "../screens/AnalyticsScreen";
 import AddCard from "../screens/AddCard";
+import DisplayCard from "../screens/DisplayCard";
 
 
 
@@ -38,7 +39,7 @@ const AppNavigator = () => {
 				<Stack.Screen name="AdminNewsScreen" component={AdminNewsScreen}/>
 				<Stack.Screen name="AnalyticsScreen" component={AnalyticsScreen}/>
 				<Stack.Screen name="AddCard" component={AddCard}/>
-				 
+				<Stack.Screen name="DisplayCard" component={DisplayCard}/>
 
 				
 				
