@@ -10,8 +10,10 @@ const AdminDashboard = ({ navigation }) => {
   };
 
   const manageContent = () => {
+
     // Functionality to manage content
     // navigation.navigate('ManageContent') or perform actions related to managing content
+    navigation.navigate('AdminNewsScreen');
   };
 
   const viewAnalytics = () => {

@@ -35,6 +35,11 @@ const AdminNewsScreen = () => {
     navigation.navigate('AnalyticsScreen');
   };
 
+  const handleCard = () => {
+    // Navigate to the AddCard screen
+    navigation.navigate('AddCard');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Admin News Screen</Text>
@@ -57,6 +62,9 @@ const AdminNewsScreen = () => {
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleViewAnalytics}>
         <Text style={styles.buttonText}>View Analytics</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleCard}>
+        <Text style={styles.buttonText}>Add Card</Text>
       </TouchableOpacity>
     </View>
   );
@@ -94,6 +102,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '700',
   },
+  // Styles remain unchanged
 });
 
 export default AdminNewsScreen;

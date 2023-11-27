@@ -21,7 +21,7 @@ const WelcomeScreen = ({ navigation }) => {
 
         <Image source={require("../../assets/images/honey.png")} style={styles.logo} />
 
-        <Text style={styles.premiumText}>40K+ Premium Bees</Text>
+        <Text style={styles.premiumText}>60K+ Premium Bees</Text>
 
         <Text style={styles.appTitle}>Nectaus App 🐝</Text>
 
@@ -45,7 +45,11 @@ const WelcomeScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.iconButton}>
           <FontAwesome5 name="youtube" size={30} color="#ff0000" />
         </TouchableOpacity>
-          {/* Add more social media icons as needed */}
+        <TouchableOpacity style={styles.iconButton}>
+          <FontAwesome5 name="phone" size={30} color="black" />
+ 
+        </TouchableOpacity>
+          
         </View>
       </View>
     </View>
@@ -66,7 +70,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 10,
     position: "absolute",
-    top: "61%",
+    top: "55%",
     left: "42%",
     transform: [{ translateX: -25 }, { translateY: -15 }],
     zIndex: 1,
@@ -89,16 +93,19 @@ const styles = StyleSheet.create({
   },
   exploreButton: {
     backgroundColor: "#f96163",
-    borderRadius: 18,
+    borderRadius: 13,
     paddingVertical: 18,
-    width: "80%", // Adjust the width as needed
+    width: "80%", 
     alignItems: "center",
-    marginTop: 5,
+   
+    marginTop:-13,
   },
   buttonText: {
     fontSize: 20,
     color: "#fff",
     fontWeight: "500",
+    display:'flex',
+    marginBottom:-9,
   },
   socialIcons: {
     flexDirection: "row",
