@@ -1,52 +1,28 @@
 // AddCard.js
 import React, { useState } from 'react';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
+import { ScrollView, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import DisplayCard from './DisplayCard'; // Import the DisplayCard component
 
 const AddCard = ({ navigation }) => {
-  const [image, setImage] = useState(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
-  const handleImageUpload = () => {
-    const options = {
-      title: 'Select Image',
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-
-    ImagePicker.launchImageLibrary(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        setImage(response.uri);
-      }
-    });
-  };
-
   const handleAddCard = () => {
-    if (!image || !name || !description) {
+    if (!name || !description) {
       console.warn('Please fill out all fields');
       return;
     }
 
-    console.log('Image:', image);
     console.log('Name:', name);
     console.log('Description:', description);
 
-    //turashyira API logic hano
+    // turashyira API logic here
     // Example:
-    // api.addCard({ image, name, description })
+    // api.addCard({ name, description })
 
-    //  we Navigate to DisplayCard with the uploaded data
-    navigation.navigate('DisplayCard', { imageUri: image, name, description });
+    // Navigate to DisplayCard with the entered data
+    navigation.navigate('DisplayCard', { name, description });
 
-    setImage(null);
     setName('');
     setDescription('');
   };
@@ -54,14 +30,6 @@ const AddCard = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Add Card Screen</Text>
-
-      <TouchableOpacity style={styles.uploadButton} onPress={handleImageUpload}>
-        {image ? (
-          <Image source={{ uri: image }} style={styles.uploadedImage} />
-        ) : (
-          <Text style={styles.uploadText}>Select Image from Gallery</Text>
-        )}
-      </TouchableOpacity>
 
       <TextInput
         style={styles.input}
@@ -96,27 +64,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-  },
-  uploadButton: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '80%',
-    height: 150,
-    backgroundColor: '#f0f0f0',
-  },
-  uploadedImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 8,
-  },
-  uploadText: {
-    fontSize: 16,
-    color: '#3498db',
   },
   input: {
     borderWidth: 1,

@@ -1,3 +1,10 @@
+import { Text } from "react-native";
+import React from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+
+
+
 export const colors = {
 	COLOR_PRIMARY: "#f96163",
 	COLOR_LIGHT: "#fff",
@@ -10,43 +17,43 @@ export const colors = {
 export const categories = [
 	{
 		id: "01",
-		category: "bee type1",
+		category: "Hive 1",
 	},
 	{
 		id: "02",
-		category: "bee type2",
+		category: "Hive 2",
 	},
 	{
 		id: "03",
-		category: "bee type3",
+		category: "Hive 3",
 	},
 	{
 		id: "04",
-		category: "bee type4",
+		category: "Hive 4",
 	},
 	{
 		id: "05",
-		category: "bee type5",
+		category: "Hive 5",
 	},
 	{
 		id: "06",
-		category: "bee type6",
+		category: "Hive 6",
 	},
 	{
 		id: "07",
-		category: "bee type7",
+		category: "Hive 8",
 	},
 	{
 		id: "08",
-		category: " bee type8",
+		category: " Hive 9",
 	},
 ];
 
 export const recipeList = [
 	{
 		id: "01",
-		name: "Honeybees",
-		image: require("../assets/images/bee1.png"),
+		name: "Hive 1",
+	image: require("../assets/images/bee11.jpg"),
 		rating: "4.2",
 		ingredients: ["Fresh Tuna", "Lime Juice", "Red Onion", "Avocado"],
 		time: "40 mins",
@@ -61,11 +68,16 @@ export const recipeList = [
 			"Mix the tuna, red onion, and avocado in a bowl.",
 			"Drizzle lime juice over the mixture and gently toss.",
 			"Serve chilled and enjoy!",
+			<TouchableOpacity onPress={() => navigation.navigate("RecipeDetail", { item: item })}>
+				<Text style={{ color: colors.COLOR_PRIMARY }}>View More</Text>
+			</TouchableOpacity>,
+
+			
 		],
 	},
 	{
 		id: "02",
-		name: "Bumblebees ",
+		name: "Hive 2 ",
 		image: require("../assets/images/bee4.png"),
 		rating: "3.6",
 		ingredients: [
@@ -90,8 +102,8 @@ export const recipeList = [
 	},
 	{
 		id: "03",
-		name: "Carpenter ",
-		image: require("../assets/images/bee5.png"),
+		name: "Hive 3 ",
+		image: require("../assets/images/bee12.jpg"),
 		rating: "4.6",
 		ingredients: ["Hot Dog Buns", "Frankfurters", "Ketchup", "Mustard"],
 		time: "40 mins",
@@ -110,7 +122,7 @@ export const recipeList = [
 	},
 	{
 		id: "04",
-		name: "Mason Bees ",
+		name: "Hive 4 ",
 		image: require("../assets/images/bee1.png"),
 		rating: "3.6",
 		ingredients: ["Cauliflower", "Soy Sauce", "Ginger", "Garlic"],
@@ -130,7 +142,7 @@ export const recipeList = [
 	},
 	{
 		id: "05",
-		name: "Mining Bees",
+		name: "Hive 5",
 		image: require("../assets/images/bee2.png"),
 		rating: "2.2",
 		ingredients: ["Chicken Breasts", "Salt", "Black Pepper", "Olive Oil"],
@@ -151,7 +163,7 @@ export const recipeList = [
 	},
 	{
 		id: "06",
-		name: "Sweat Bees",
+		name: "Hive 6",
 		image: require("../assets/images/bee3.png"),
 		rating: "5.0",
 		ingredients: ["Flour", "Sugar", "Eggs", "Butter"],
@@ -171,7 +183,7 @@ export const recipeList = [
 	},
 	{
 		id: "07",
-		name: "Leafcutter Bees",
+		name: "Hive 7",
 		image: require("../assets/images/bee1.png"),
 		rating: "4.8",
 		ingredients: ["Meat", "Curry Powder", "Coconut Milk", "Spices"],
@@ -194,7 +206,7 @@ export const recipeList = [
 	
 	{
 		id: "08",
-		name: "Leafcutter Bees",
+		name: "Hive 8",
 		image: require("../assets/images/bee4.png"),
 		rating: "4.2",
 		ingredients: ["Ramen Noodles", "Soy Sauce", "Eggs", "Vegetables"],
@@ -216,3 +228,4 @@ export const recipeList = [
 		
 	},
 ];
+

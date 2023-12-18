@@ -1,20 +1,41 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Image } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 const WelcomeScreen = ({ navigation }) => {
-  const handleExplore = () => {
-    navigation.navigate("Login");
-  };
+  const [backgroundImageIndex, setBackgroundImageIndex] = useState(1);
 
   const handleChat = () => {
     navigation.navigate("ChatScreen");
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBackgroundImageIndex((prevIndex) => (prevIndex % 2) + 1);
+    }, 5000); // Change the interval as needed (in milliseconds)
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const getBackgroundImage = () => {
+    switch (backgroundImageIndex) {
+      case 1:
+        return require("../../assets/images/bee11.jpg");
+      case 2:
+        return require("../../assets/images/bee12.jpg");
+      default:
+        return require("../../assets/images/bee11.jpg");
+    }
+  };
+
+  const handleExplore = () => {
+    navigation.navigate("Login");
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainer}>
+    <ImageBackground source={getBackgroundImage()} style={styles.backgroundImage} blurRadius={5}>
+      <View style={styles.container}>
         <TouchableOpacity onPress={handleChat} style={styles.chatButton}>
           <Icon name="comments" size={20} color="#fff" />
         </TouchableOpacity>
@@ -40,19 +61,17 @@ const WelcomeScreen = ({ navigation }) => {
             <FontAwesome5 name="instagram" size={30} color="#e4405f" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton}>
-          <FontAwesome5 name="tiktok" size={30} color="#69c9d0" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}>
-          <FontAwesome5 name="youtube" size={30} color="#ff0000" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}>
-          <FontAwesome5 name="phone" size={30} color="black" />
- 
-        </TouchableOpacity>
-          
+            <FontAwesome5 name="tiktok" size={30} color="#69c9d0" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <FontAwesome5 name="youtube" size={30} color="#ff0000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <FontAwesome5 name="phone" size={30} color="black" />
+          </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -61,9 +80,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-  contentContainer: {
-    alignItems: "center",
   },
   chatButton: {
     backgroundColor: "#3498db",
@@ -93,27 +109,34 @@ const styles = StyleSheet.create({
   },
   exploreButton: {
     backgroundColor: "#f96163",
-    borderRadius: 13,
+    borderRadius: 18,
     paddingVertical: 18,
-    width: "80%", 
+    width: "80%",
     alignItems: "center",
-   
-    marginTop:-13,
+    marginTop: -13,
   },
   buttonText: {
     fontSize: 20,
     color: "#fff",
     fontWeight: "500",
-    display:'flex',
-    marginBottom:-9,
+    display: "flex",
+    marginBottom: -9,
   },
   socialIcons: {
     flexDirection: "row",
     marginTop: 3,
-    marginBottom:50
+    marginBottom: 50,
   },
   iconButton: {
     marginHorizontal: 10,
+    padding: 0,
+    marginBottom: 10,
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+    opacity: 0.8,
   },
 });
 

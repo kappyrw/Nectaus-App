@@ -1,50 +1,91 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ImageBackground, Button } from 'react-native';
 
 const AdminDashboard = ({ navigation }) => {
-  // Example functions for different admin functionalities
+  const [isMenuVisible, setMenuVisibility] = useState(false);
+  const [backgroundImageIndex, setBackgroundImageIndex] = useState(1);
+
+  const toggleMenu = () => {
+    setMenuVisibility(!isMenuVisible);
+  };
+
   const manageUsers = () => {
-    // Functionality to manage users
-    // navigation.navigate('ManageUsers') or perform actions related to managing users
+    navigation.navigate('ManageUsers');
+    toggleMenu();
   };
 
   const manageContent = () => {
-
-    // Functionality to manage content
-    // navigation.navigate('ManageContent') or perform actions related to managing content
     navigation.navigate('AdminNewsScreen');
+    toggleMenu();
   };
 
   const viewAnalytics = () => {
-    // Functionality to view analytics
-    // navigation.navigate('ViewAnalytics') or perform actions related to analytics
     navigation.navigate('AnalyticsScreen');
-
+    toggleMenu();
   };
 
   const handleUpdates = () => {
-    // Navigate to the RecipeListScreen when the "Updates" button is clicked
     navigation.navigate('RecipeList');
+    toggleMenu();
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBackgroundImageIndex((prevIndex) => (prevIndex % 3) + 1);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const getBackgroundImage = () => {
+    switch (backgroundImageIndex) {
+      case 1:
+        return require('../../assets/images/bee11.jpg');
+      case 2:
+        return require('../../assets/images/bee12.jpg');
+      case 3:
+        return require('../../assets/images/bee11.jpg');
+      default:
+        return require('../../assets/images/bee12.jpg');
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Admin Dashboard</Text>
-      <TouchableOpacity style={styles.button} onPress={manageUsers}>
-        <Text style={styles.buttonText}>Manage Users</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={manageContent}>
-        <Text style={styles.buttonText}>Manage Content</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={viewAnalytics}>
-        <Text style={styles.buttonText}>View Analytics</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={handleUpdates}>
-        <Text style={styles.buttonText}>Updates</Text>
-      </TouchableOpacity>
-      {/* Additional buttons or components for other functionalities */}
-    </View>
+    <ImageBackground source={getBackgroundImage()} style={styles.backgroundImage}>
+      <View style={styles.container}>
+        <Text style={styles.title}>🚀Admin Dashboard 🚀</Text>
+        <TouchableOpacity style={styles.hamburgerButton} onPress={toggleMenu}>
+          <Text style={styles.hamburgerButtonText}>☰</Text>
+        </TouchableOpacity>
+        
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isMenuVisible}
+          onRequestClose={() => {
+            setMenuVisibility(!isMenuVisible);
+          }}
+        >
+          <View style={styles.menuContainer}>
+            <TouchableOpacity style={styles.menuItem} onPress={manageUsers}>
+              <Text style={styles.menuItemText}>Manage Users</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={manageContent}>
+              <Text style={styles.menuItemText}>Manage Content</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={viewAnalytics}>
+              <Text style={styles.menuItemText}>View Analytics</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={handleUpdates}>
+              <Text style={styles.menuItemText}>Hives info</Text>
+            </TouchableOpacity>
+            
+            {/* Additional menu items for other functionalities */}
+            <Button title="Close" onPress={toggleMenu} />
+          </View>
+        </Modal>
+      </View>
+    </ImageBackground>
   );
 };
 
@@ -55,11 +96,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#000000',
   },
-  button: {
+  hamburgerButton: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    zIndex: 1,
+    
+  },
+  hamburgerButtonText: {
+    fontSize: 60,
+    color: '#000000', // Change the color to black
+  },
+  menuContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  menuItem: {
     backgroundColor: '#3498db',
     borderRadius: 18,
     paddingVertical: 18,
@@ -67,11 +126,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
   },
-  buttonText: {
+  menuItemText: {
     fontSize: 18,
     color: '#fff',
     fontWeight: '700',
   },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
 });
-
 export default AdminDashboard;
