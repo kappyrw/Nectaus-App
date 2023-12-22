@@ -79,6 +79,9 @@ const AdminDashboard = ({ navigation }) => {
             <TouchableOpacity style={styles.menuItem} onPress={handleUpdates}>
               <Text style={styles.menuItemText}>Hives info</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={handleUpdates}>
+              <Text style={styles.menuItemText}>Hives info</Text>
+            </TouchableOpacity>
             
             {/* Additional menu items for other functionalities */}
             <Button title="Close" onPress={toggleMenu} />
