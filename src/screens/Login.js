@@ -1,10 +1,42 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Button } from "react-native";
-import React, { useState } from "react";
+import React, { useContext,useState } from "react";
+import { AuthContext } from "../context/AuthContext";
+import axios from "axios";
+import Spinner from "react-native-loading-spinner-overlay";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL } from "../config";
+
 
 const Login = ({ navigation }) => {
-  const [username, setUsername] = useState("");
+
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [email, setEmail] =useState("");
+    const [userInfo, setUserInfo] = useState(null); // Store user info
+  const [isLoading,setIsLoading] =useState(false)
+  const login = async(email,password)=>{
+    try {
+      // preventDefault();
+     setIsLoading(true)
+      const res= await axios.post(`https://holiday-planner-4lnj.onrender.com/api/v1/auth/login`,{
+        email,password
+      });
+        let userInfo=res.data;
+        console.log(userInfo);
+      setUserInfo(userInfo);
+      AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
+      setIsLoading(false)
+      navigation.navigate("AdminDashboard");
+      
+     
+
+      
+    } catch (e) {
+       console.error(`login error ${e}`);
+      setIsLoading(false)
+      
+    }
+  }
+  
   
 
   const handleLogin = () => {
@@ -38,6 +70,7 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, alignItems: "center" }}>
+      <Spinner visible={isLoading}/>
       <Image
         source={require("../../assets/images/bee4.png")}
         style={{ marginTop: 200, width: 100, height: 100 }}
@@ -61,8 +94,8 @@ const Login = ({ navigation }) => {
 
       <TextInput
         placeholder="Username"
-        value={username}
-        onChangeText={(text) => setUsername(text)}
+        value={email}
+        onChangeText={(text) => setEmail(text)}
         style={{
           borderWidth: 1,
           borderColor: "gray",
@@ -91,7 +124,7 @@ const Login = ({ navigation }) => {
       />
 
       <TouchableOpacity
-        onPress={handleLogin}
+        onPress={()=>{login(email,password)}}
         style={{
       backgroundColor: "#3498db",
           borderRadius: 18,
