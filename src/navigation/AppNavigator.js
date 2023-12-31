@@ -18,6 +18,7 @@ import AddCard from "../screens/AddCard";
 import DisplayCard from "../screens/DisplayCard";
 import HiveDetail from "../screens/HivesScreen";
 import AddHiveInfo from "../screens/AddHiveInfo";
+import { AuthContext } from "../context/AuthContext";
 
 //i am going to impport all an important files to use in navigation 
 
@@ -29,6 +30,8 @@ import AddHiveInfo from "../screens/AddHiveInfo";
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
 	return (
+		
+
 		<NavigationContainer>
 			<Stack.Navigator screenOptions={{ headerShown: false }}>
 				<Stack.Screen name="Welcome" component={WelcomeScreen} />
@@ -52,6 +55,7 @@ const AppNavigator = () => {
 				
 			</Stack.Navigator>
 		</NavigationContainer>
+		
 	);
 };
 

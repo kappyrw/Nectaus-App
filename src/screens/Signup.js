@@ -1,14 +1,65 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, TextInput,Button, TouchableOpacity, StyleSheet,AppTextInput } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import axios from "axios";
+import { Formik } from 'formik';
+import { AuthContext } from '../context/AuthContext';
+import { BASE_URL } from "../config";
+import { Assets } from 'react-navigation-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Spinner from "react-native-loading-spinner-overlay"
 const Signup = ({ navigation }) => {
-  const [username, setUsername] = useState('');
+  // const { register } = useContext(AuthContext); // Access the register function
+
+  const [fullName, setUsername] = useState('');
+  const [role, setRole] = useState('');
+  const [location, setLocation] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+    const [userInfo, setUserInfo] = useState(null); // Store user info
+  const [isLoading,setIsLoading] =useState(false)
+
+  const register = async (email, fullName, password, phone, location, role) => {
+    try {
+      setIsLoading(true)
+      const res = await axios.post(`${BASE_URL}/auth/signup`, {
+        email,
+        fullName,
+        password,
+        phone,
+        location,
+        role,
+      });
+      console.log(res.data);
+      let userInfo=res.data;
+      setUserInfo(userInfo);
+      AsyncStorage.setItem("userInfo",JSON.stringify(userInfo))
+      setIsLoading(false)
+      navigation.navigate("Login");
+    } catch (e) {
+      console.error(`register error ${e}`);
+      setIsLoading(false)
+      
+    }
+  };
+
+  // const [formData, setFormData] = useState({
+  //   email: "",
+  //   fullName: "",
+  //   password: "",
+  //   phone: "",
+  //   location: "",
+  //   role: "",
+  // });
+  //   const handleChange = (e) => {
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  // };
+  
+//  const {register} = useContext(AuthContext);
+
 
   const handleSignup = () => {
     if (!username || !email || !password || !confirmPassword) {
@@ -41,12 +92,31 @@ const Signup = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Spinner visible={isLoading}/>  
       <Text style={styles.title}>Create an Account 🐝</Text>
+      {/* <Text>text {val}</Text> */}
       <TextInput
         style={styles.input}
         placeholder="Username"
-        value={username}
+        value={fullName}
         onChangeText={(text) => setUsername(text)}
+        />
+      
+      <TextInput
+      style={styles.input}
+      icon="role"
+      placeholder="role"
+      onChangeText={(text) => setRole(text)}
+      value={role}
+
+      />
+      <TextInput
+      style={styles.input}
+      icon="location"
+      placeholder="location"
+      onChangeText={(text) => setLocation(text)}
+      value={location}
+
       />
       <TextInput
         style={styles.input}
@@ -95,7 +165,10 @@ const Signup = ({ navigation }) => {
         value={confirmPassword}
         onChangeText={(text) => setConfirmPassword(text)}
       />
-      <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
+      {/* <Button></Button> */}
+      <TouchableOpacity style={styles.signupButton} onPress={()=>{
+        register(email,  fullName,  password,  phone,  location,  role)
+      }}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
