@@ -17,7 +17,7 @@ const Login = ({ navigation }) => {
     try {
       // preventDefault();
      setIsLoading(true)
-      const res= await axios.post(`https://holiday-planner-4lnj.onrender.com/api/v1/auth/login`,{
+      const res= await axios.post(`${BASE_URL}/auth/login`,{
         email,password
       });
         let userInfo=res.data;
@@ -31,7 +31,7 @@ const Login = ({ navigation }) => {
 
       
     } catch (e) {
-       console.error(`login error ${e}`);
+       console.error(`login error wrong credential${e}`);
       setIsLoading(false)
       
     }
@@ -40,7 +40,7 @@ const Login = ({ navigation }) => {
   
 
   const handleLogin = () => {
-    if (!username || !password) {
+    if (!email || !password) {
       alert("Please fill in your username and password.");
      
       return;

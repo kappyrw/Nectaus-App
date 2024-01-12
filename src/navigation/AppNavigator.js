@@ -24,16 +24,13 @@ import { AuthContext } from "../context/AuthContext";
 
 
 
-
-
- 
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
 	return (
 		
 
 		<NavigationContainer>
-			<Stack.Navigator screenOptions={{ headerShown: false }}>
+			<Stack.Navigator screenOptions={{ headerShown: true }}>
 				<Stack.Screen name="Welcome" component={WelcomeScreen} />
 				<Stack.Screen name="RecipeList" component={RecipeListScreen} />
 				<Stack.Screen name="RecipeDetail" component={RecipeDetailsScreen} />
