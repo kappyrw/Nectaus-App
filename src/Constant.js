@@ -56,18 +56,16 @@ export const recipeList = [
 	image: require("../assets/images/bee11.jpg"),
 		rating: "4.2",
 		ingredients: ["Fresh Tuna", "Lime Juice", "Red Onion", "Avocado"],
-		time: "40 mins",
+			temp: "Temperature: 35°C",
 		difficulty: "Medium",
 		calories: "420 cal",
 		color: "#006A4E",
 		description:
 			"A delightful and refreshing dish featuring fresh tuna mixed with zesty lime juice and the crunch of red onion and avocado.",
 		steps: [
-			"Dice the fresh tuna into small cubes.",
-			"Finely chop the red onion and avocado.",
-			"Mix the tuna, red onion, and avocado in a bowl.",
-			"Drizzle lime juice over the mixture and gently toss.",
-			"Serve chilled and enjoy!",
+
+			"i will put table here",
+			// i will put table here
 			<TouchableOpacity onPress={() => navigation.navigate("RecipeDetail", { item: item })}>
 				<Text style={{ color: colors.COLOR_PRIMARY }}>View More</Text>
 			</TouchableOpacity>,
@@ -86,8 +84,8 @@ export const recipeList = [
 			"Ricotta Cheese",
 			"Tomato Sauce",
 		],
-		time: "40 mins",
-		difficulty: "Medium",
+		time: "",
+		difficulty: "",
 		calories: "420 cal",
 		color: "#f39c12",
 		description:
