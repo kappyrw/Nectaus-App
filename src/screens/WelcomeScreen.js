@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Image } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { AntDesign } from '@expo/vector-icons';
 
 const WelcomeScreen = ({ navigation }) => {
   const [backgroundImageIndex, setBackgroundImageIndex] = useState(1);
@@ -18,27 +19,25 @@ const WelcomeScreen = ({ navigation }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const getBackgroundImage = () => {
-    switch (backgroundImageIndex) {
-      case 1:
-        return require("../../assets/images/bee11.jpg");
-      case 2:
-        return require("../../assets/images/bee12.jpg");
-      default:
-        return require("../../assets/images/bee11.jpg");
-    }
-  };
+  // const getBackgroundImage = () => {
+  //   switch (backgroundImageIndex) {
+  //     case 1:
+  //       return 0;
+  //     // case 2:
+  //     //   return require("../../assets/images/bee12.jpg");
+  //     // default:
+  //     //   return require("../../assets/images/bee11.jpg");
+  //   }
+  // };
 
   const handleExplore = () => {
     navigation.navigate("Login");
   };
 
   return (
-    <ImageBackground source={getBackgroundImage()} style={styles.backgroundImage} blurRadius={5}>
+    // <ImageBackground source={getBackgroundImage()} style={styles.backgroundImage} >
       <View style={styles.container}>
-        <TouchableOpacity onPress={handleChat} style={styles.chatButton}>
-          <Icon name="comments" size={20} color="#fff" />
-        </TouchableOpacity>
+       
 
         <Image source={require("../../assets/images/honey.png")} style={styles.logo} />
 
@@ -51,8 +50,9 @@ const WelcomeScreen = ({ navigation }) => {
         </TouchableOpacity>
 
         <View style={styles.socialIcons}>
-          <TouchableOpacity style={styles.iconButton}>
-            <FontAwesome5 name="facebook" size={30} color="#3b5998" />
+          <TouchableOpacity style={styles.iconButton} onPress={handleChat}>
+           
+          <AntDesign name="message1" size={30} color="#3b5998" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton}>
             <FontAwesome5 name="twitter" size={30} color="#1da1f2" />
@@ -71,7 +71,7 @@ const WelcomeScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </ImageBackground>
+   
   );
 };
 
@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    
   },
   chatButton: {
     backgroundColor: "#3498db",
@@ -92,8 +93,9 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   logo: {
-    marginTop: 30,
+    marginTop: -10,
     marginBottom: 10,
+    
   },
   premiumText: {
     color: "#f96163",
@@ -113,7 +115,8 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     width: "80%",
     alignItems: "center",
-    marginTop: -13,
+    marginTop: -23,
+    marginBottom:20,
   },
   buttonText: {
     fontSize: 20,
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
   socialIcons: {
     flexDirection: "row",
     marginTop: 3,
-    marginBottom: 50,
+    marginBottom: 20,
   },
   iconButton: {
     marginHorizontal: 10,

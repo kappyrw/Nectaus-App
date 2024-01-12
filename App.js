@@ -5,12 +5,11 @@ import { AuthProvider } from "./src/context/AuthContext";
 
 export default function App() {
 	return(
-//   <React.StrictMode>
 
 	<AuthProvider>
-	<AppNavigator />
+		<AppNavigator />
 	</AuthProvider>
-//   </React.StrictMode>
+
 
 
 		);

@@ -1,9 +1,10 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput,Button, TouchableOpacity, StyleSheet,AppTextInput } from 'react-native';
+import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, AppTextInput } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from "axios";
 import { Formik } from 'formik';
 import { AuthContext } from '../context/AuthContext';
+import { AuthProvider } from '../context/AuthContext';
 import { BASE_URL } from "../config";
 import { Assets } from 'react-navigation-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,32 +20,32 @@ const Signup = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-    const [userInfo, setUserInfo] = useState(null); // Store user info
-  const [isLoading,setIsLoading] =useState(false)
+  const [userInfo, setUserInfo] = useState(null); // Store user info
+  const [isLoading, setIsLoading] = useState(false)
 
-  const register = async (email, fullName, password, phone, location, role) => {
-    try {
-      setIsLoading(true)
-      const res = await axios.post(`${BASE_URL}/auth/signup`, {
-        email,
-        fullName,
-        password,
-        phone,
-        location,
-        role,
-      });
-      console.log(res.data);
-      let userInfo=res.data;
-      setUserInfo(userInfo);
-      AsyncStorage.setItem("userInfo",JSON.stringify(userInfo))
-      setIsLoading(false)
-      navigation.navigate("Login");
-    } catch (e) {
-      console.error(`register error ${e}`);
-      setIsLoading(false)
-      
-    }
-  };
+  // const register = async (email, fullName, password, phone, location, role) => {
+  //   try {
+  //     setIsLoading(true)
+  //     const res = await axios.post(`${BASE_URL}/auth/signup`, {
+  //       email,
+  //       fullName,
+  //       password,
+  //       phone,
+  //       location,
+  //       role,
+  //     });
+  //     console.log(res.data);
+  //     let userInfo=res.data;
+  //     setUserInfo(userInfo);
+  //     AsyncStorage.setItem("userInfo",JSON.stringify(userInfo))
+  //     setIsLoading(false)
+  //     navigation.navigate("Login");
+  //   } catch (e) {
+  //     console.error(`register error ${e}`);
+  //     setIsLoading(false)
+
+  //   }
+  // };
 
   // const [formData, setFormData] = useState({
   //   email: "",
@@ -57,8 +58,9 @@ const Signup = ({ navigation }) => {
   //   const handleChange = (e) => {
   //   setFormData({ ...formData, [e.target.name]: e.target.value });
   // };
-  
-//  const {register} = useContext(AuthContext);
+  console.log(AuthProvider)
+  const { registers } = useContext(AuthContext);
+  console.log(registers);
 
 
   const handleSignup = () => {
@@ -92,7 +94,7 @@ const Signup = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Spinner visible={isLoading}/>  
+      <Spinner visible={isLoading} />
       <Text style={styles.title}>Create an Account 🐝</Text>
       {/* <Text>text {val}</Text> */}
       <TextInput
@@ -100,22 +102,22 @@ const Signup = ({ navigation }) => {
         placeholder="Username"
         value={fullName}
         onChangeText={(text) => setUsername(text)}
-        />
-      
+      />
+
       <TextInput
-      style={styles.input}
-      icon="role"
-      placeholder="role"
-      onChangeText={(text) => setRole(text)}
-      value={role}
+        style={styles.input}
+        icon="role"
+        placeholder="role"
+        onChangeText={(text) => setRole(text)}
+        value={role}
 
       />
       <TextInput
-      style={styles.input}
-      icon="location"
-      placeholder="location"
-      onChangeText={(text) => setLocation(text)}
-      value={location}
+        style={styles.input}
+        icon="location"
+        placeholder="location"
+        onChangeText={(text) => setLocation(text)}
+        value={location}
 
       />
       <TextInput
@@ -166,8 +168,8 @@ const Signup = ({ navigation }) => {
         onChangeText={(text) => setConfirmPassword(text)}
       />
       {/* <Button></Button> */}
-      <TouchableOpacity style={styles.signupButton} onPress={()=>{
-        register(email,  fullName,  password,  phone,  location,  role)
+      <TouchableOpacity style={styles.signupButton} onPress={() => {
+        registers(email, fullName, password, phone, location, role)
       }}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>

@@ -1,1 +1,1 @@
-export const BASE_URL ='https://holiday-planner-4lnj.onrender.com/api/v1'
+export const BASE_URL ='https://umuzingacrud.onrender.com/api/v1'
