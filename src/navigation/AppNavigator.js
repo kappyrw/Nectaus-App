@@ -19,6 +19,8 @@ import DisplayCard from "../screens/DisplayCard";
 import HiveDetail from "../screens/HivesScreen";
 import AddHiveInfo from "../screens/AddHiveInfo";
 import { AuthContext } from "../context/AuthContext";
+import { useContext } from "react";
+import Hive1Screen from "../screens/Hive1Screen";
 
 //i am going to impport all an important files to use in navigation 
 
@@ -49,6 +51,8 @@ const AppNavigator = () => {
 				<Stack.Screen name="DisplayCard" component={DisplayCard}/>
 				<Stack.Screen name="HiveDetail" component={HiveDetail} />
 				<Stack.Screen name="AddHiveInfo" component={AddHiveInfo} />
+
+				<Stack.Screen name="Hive1Screen" component={Hive1Screen} />
 
 				
 				
