@@ -44,10 +44,7 @@ const AddCard = ({ navigation }) => {
     }
   };
   console.log(userInfo);
-  const handleSubmit =(e)=>
-  {
-   console.log("hiveInput submit");
-  }
+  
   useEffect(()=>{
     db.transaction(tx=>{
       tx.executeSql('CREATE TABLE IF NOT  EXISTS localHives(id INTEGER PRIMARY KEY AUTOINCREMENT,HiveSN INTEGER, HiveName TEXT, DeviceSN TEXT, HiveOwner TEXT, HiveDimension INTEGER, HiveWeight TEXT, HiveLocation TEXT,Description TEXT)')
@@ -174,7 +171,7 @@ const showHiveData= ()=>{
       />
       <TextInput
         style={styles.input}
-        placeholder="Hive Location"
+        placeholder="Hive Discription"
         // onChange={handleChange}
         value={Description}
         onChangeText={(text) => setDescription(text)}
@@ -187,12 +184,7 @@ const showHiveData= ()=>{
         <Text>create local hive</Text>
 
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={()=>{
-        addHive(HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight,HiveLocation,Description)
-        // addLocalHive(HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description);
-      }}>
-        <Text style={styles.buttonText}>Create New Hive</Text>
-      </TouchableOpacity>
+    
       
     </ScrollView>
   );
