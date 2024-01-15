@@ -15,24 +15,24 @@ const Login = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Commented out the API section, please uncomment it when ready to integrate with your API
-  // const login = async (email, password) => {
-  //   try {
-  //     setIsLoading(true);
-  //     const res = await axios.post(`${BASE_URL}/auth/login`, {
-  //       email,
-  //       password,
-  //     });
-  //     let userInfo = res.data;
-  //     console.log(userInfo);
-  //     setUserInfo(userInfo);
-  //     AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
-  //     setIsLoading(false);
-  //     navigation.navigate("AdminDashboard");
-  //   } catch (e) {
-  //     console.error(`login error wrong credential${e}`);
-  //     setIsLoading(false);
-  //   }
-  // };
+  const login = async (email, password) => {
+    try {
+      setIsLoading(true);
+      const res = await axios.post(`${BASE_URL}/auth/login`, {
+        email,
+        password,
+      });
+      let userInfo = res.data;
+      console.log(userInfo);
+      setUserInfo(userInfo);
+      AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
+      setIsLoading(false);
+      navigation.navigate("AdminDashboard");
+    } catch (e) {
+      console.error(`login error wrong credential${e}`);
+      setIsLoading(false);
+    }
+  };
 
   // Temporary login function for testing
   const handleLogin = () => {
@@ -74,7 +74,7 @@ const Login = ({ navigation }) => {
       />
 
       <TouchableOpacity
-        onPress={handleLogin}
+        onPress={()=>login(email, password)}
         style={styles.loginButton}
       >
         <Text style={styles.buttonText}>Login</Text>
