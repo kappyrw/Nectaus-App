@@ -7,6 +7,7 @@ import { BASE_URL } from "../config";
 import Spinner from "react-native-loading-spinner-overlay"
 import DisplayCard from './DisplayCard'; // Import the DisplayCard component
 import * as SQLite from"expo-sqlite"
+import { Button } from 'react-native-web';
 
 const AddCard = ({ navigation }) => {
   const db= SQLite.openDatabase('localHive.db');
@@ -23,23 +24,6 @@ const AddCard = ({ navigation }) => {
   const [isLoading,setIsLoading] =useState(false)
   const [localHives,setLocalHives] = useState([])
 
-  
-
-  
-  //   const [hiveInput, sethiveInput] = useState({
-  //   HiveSN: "",
-  //   HiveName: "",
-  //   DeviceSN: "",
-  //   HiveOwner: "",
-  //   HiveDimension: "",
-  //   HiveWeight: "",
-  //   HiveLocation: "",
-  //   Description: "",
-  // });
-  // const handleChange = (e) => {
-  //   sethiveInput({ ...hiveInput, [e.target.name]: e.target.value });
-  // };
-    
   const addHive = async (HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight,HiveLocation,Description) => {
     try {
       setIsLoading(true)
@@ -66,7 +50,7 @@ const AddCard = ({ navigation }) => {
   }
   useEffect(()=>{
     db.transaction(tx=>{
-      tx.executeSql('CREATE TABLE IF NOT EXIST localHives(id INTEGER PRIMARY KEY AUTOINCREMENT,HiveSN INTEGER, HiveName TEXT, DeviceSN TEXT, HiveOwner TEXT, HiveDimension INTEGER, HiveWeight TEXT, HiveLocation TEXT,Description TEXT)')
+      tx.executeSql('CREATE TABLE IF NOT  EXISTS localHives(id INTEGER PRIMARY KEY AUTOINCREMENT,HiveSN INTEGER, HiveName TEXT, DeviceSN TEXT, HiveOwner TEXT, HiveDimension INTEGER, HiveWeight TEXT, HiveLocation TEXT,Description TEXT)')
     });
     db.transaction(tx =>{
       tx.executeSql('select * from localHives ',
@@ -76,34 +60,64 @@ const AddCard = ({ navigation }) => {
       );
     })
   },[]);
+  const addLocalHive = (HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description) => {
+    db.transaction(tx => {
+      tx.executeSql('INSERT INTO localHives(HiveSN , HiveName , DeviceSN , HiveOwner , HiveDimension , HiveWeight , HiveLocation ,Description)  values(?,?,?,?,?,?,?,?)', [HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description],
+        (txObj, resultSet) => {
+          let existingHives = [...localHives];
+          existingHives.push({ id: resultSet.insertId, HiveSN: HiveSN, HiveName: HiveName, DeviceSN: DeviceSN, HiveOwner: HiveOwner, HiveDimension: HiveDimension, HiveWeight: HiveWeight, HiveLocation: HiveLocation, Description: Description })
+
+          setLocalHives(existingHives);
+          setHiveSN(undefined), setHiveName(undefined), setDeviceSN(undefined), setHiveOwner(undefined), setHiveDimension(undefined), setHiveWeight(undefined), setHiveLocation(undefined), setDescription(undefined);
+          
+          console.log("my localhive", existingHives);
+        },
+        (txObj,error)=> console.log(error)
+        );
+      })
+    }
+    const deleteLocalHive=(id)=>
+    {
+      db.transaction(tx => {
+        tx.executeSql('DELETE  FROM localHives WHERE id=?', [id],
+        (txObj, resultSet) => {
+          if(resultSet.rowsAffected>0){
+            
+            let existingHives = [...localHives].filter(localHive => localHive.id !==id);
+            setLocalHives(existingHives);
+        }
+
+        
+      },
+      (txObj, error) => console.log(error)
+    );
+  })
+}
+
+
+  console.log("my out localhive", localHives);
 const showHiveData= ()=>{
   return localHives.map((HiveName,index)=>{
     return(
       <View key={index}>
-        <Text>{HiveName?.HiveName}</Text>
+        <Text>{HiveName?.HiveOwner}</Text>
+        <TouchableOpacity onPress={() => deleteLocalHive(HiveName.id)} >
+        <Text >DELETE</Text>
+
+        </TouchableOpacity>
+        {/* <Button title="Delete Hive" onPress={() => deleteLocalHive(HiveName.id)}></Button> */}
 
       </View>
     )
   })
 
-  const addLocalHive = (HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description)=>
-  {
-    db.transaction(tx=>{
-      tx.executeSql('INSERT INTO localHives(HiveSN , HiveName , DeviceSN , HiveOwner , HiveDimension , HiveWeight , HiveLocation ,Description)  values(?,?,?,?,?,?,?,?)', [HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description],
-      (txObj,resultSet)=>
-      {
-        let existingHives =[...localHives];
-        existingHives.push({ id: resultSet.insertId, HiveSN: HiveSN, HiveName: HiveName, DeviceSN: DeviceSN, HiveOwner: HiveOwner, HiveDimension: HiveDimension, HiveWeight: HiveWeight, HiveLocation: HiveLocation, Description: Description })
-        
-      }
-      )
-    })
-  }
+  
 }
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Create a New Hive </Text>
-      <Text>{showHiveData()}</Text>
+    
+
       <Spinner visible={isLoading}/>  
       <TextInput
         style={styles.input}
@@ -133,6 +147,7 @@ const showHiveData= ()=>{
         value={HiveOwner}
         onChangeText={(text) => setHiveOwner(text)}
       />
+      {showHiveData()}
       <TextInput
         style={styles.input}
         placeholder="Hive Dimension (L*W*H) "
@@ -165,18 +180,20 @@ const showHiveData= ()=>{
         onChangeText={(text) => setDescription(text)}
         multiline
       />
+      <TouchableOpacity style={styles.button} onPress={() => {
 
+        addLocalHive(HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description);
+      }}>
+        <Text>create local hive</Text>
 
+      </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={()=>{
         addHive(HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight,HiveLocation,Description)
+        // addLocalHive(HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description);
       }}>
         <Text style={styles.buttonText}>Create New Hive</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={()=>{
-        // addLocalHive()
-      }}>
-
-      </TouchableOpacity>
+      
     </ScrollView>
   );
 };
@@ -218,108 +235,3 @@ const styles = StyleSheet.create({
 
 export default AddCard;
 
-// import React, { useState } from 'react';
-// import { ScrollView, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-// import DisplayCard from './DisplayCard'; // Import the DisplayCard component
-
-// const AddCard = ({ navigation }) => {
-//   const [HiveSN, setHiveSN] = useState('');
-//   const [HiveName, setHiveName] = useState('');
-//   const [DeviceSN, setDeviceSN] = useState('');
-//   const [HiveOwner, setHiveOwner] = useState('');
-//   const [HiveDimension, setHiveDimension] = useState('');
-//   const [HiveWeight, setHiveWeight] = useState('');
-
-//   const [HiveLocation, setHiveLocation] = useState('');
-//   const [Description, setDescription] = useState('');
-
-//     const [hiveInput, sethiveInput] = useState({
-//     HiveSN: "",
-//     HiveName: "",
-//     DeviceSN: "",
-//     HiveOwner: "",
-//     HiveDimension: "",
-//     HiveWeight: "",
-//     HiveLocation: "",
-//     Description: "",
-//   });
-//   const handleChange = (e) => {
-//     sethiveInput({ ...hiveInput, [e.target.name]: e.target.value });
-//   };
-    
-//   const handleSubmit =(e)=>
-//   {
-//    console.log(hiveInput);
-//   }
-//   return (
-//     <ScrollView contentContainerStyle={styles.container}>
-//       <Text style={styles.title}>Create a New Hive </Text>
-
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Hive SIN"
-//         value={hiveInput.HiveSN}
-//         onChange={handleChange}
-//         // onChangeText={(text) => setHiveSN(text)}
-//       />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Hive Name "
-//         value={hiveInput.HiveName}
-//         onChange={handleChange}
-//         // onChangeText={(text) => setHiveName(text)}
-//       />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Device SIN"
-//         onChange={handleChange}
-//         value={hiveInput.DeviceSN}
-//         // onChangeText={(text) => setDeviceSN(text)}
-//       />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Hive Owner "
-//         onChange={handleChange}
-//         value={hiveInput.HiveOwner}
-//         // onChangeText={(text) => setHiveOwner(text)}
-//       />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Hive Dimension (L*W*H) "
-//         onChange={handleChange}
-//         value={hiveInput.HiveDimension}
-//         // onChangeText={(text) => setHiveDimension(text)}
-//       />
-
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Hive Weight"
-//         onChange={handleChange}
-//         value={hiveInput.HiveWeight}
-//         // onChangeText={(text) => setHiveWeight(text)}
-//         multiline
-//       />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Hive Location"
-//         onChange={handleChange}
-//         value={hiveInput.HiveLocation}
-//         // onChangeText={(text) => setHiveLocation(text)}
-//         multiline
-//       />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Hive Location"
-//         onChange={handleChange}
-//         value={hiveInput.Description}
-//         // onChangeText={(text) => setDescription(text)}
-//         multiline
-//       />
-
-
-//       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-//         <Text style={styles.buttonText}>Create New Hive</Text>
-//       </TouchableOpacity>
-//     </ScrollView>
-//   );
-// };
