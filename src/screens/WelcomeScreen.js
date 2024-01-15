@@ -77,6 +77,7 @@ const WelcomeScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    top:-28,
     flex: 1,
     alignItems: "center",
     justifyContent: "center",

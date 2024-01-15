@@ -6,105 +6,63 @@ import Spinner from "react-native-loading-spinner-overlay";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from "../config";
 
+// ... Other imports ...
 
 const Login = ({ navigation }) => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-    const [userInfo, setUserInfo] = useState(null); // Store user info
-  const [isLoading,setIsLoading] =useState(false)
-  const login = async(email,password)=>{
-    try {
-      // preventDefault();
-     setIsLoading(true)
-      const res= await axios.post(`${BASE_URL}/auth/login`,{
-        email,password
-      });
-        let userInfo=res.data;
-        console.log(userInfo);
-      setUserInfo(userInfo);
-      AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
-      setIsLoading(false)
-      navigation.navigate("AdminDashboard");
-      
-     
+  const [userInfo, setUserInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-      
-    } catch (e) {
-       console.error(`login error wrong credential${e}`);
-      setIsLoading(false)
-      
-    }
-  }
-  
-  
+  // Commented out the API section, please uncomment it when ready to integrate with your API
+  // const login = async (email, password) => {
+  //   try {
+  //     setIsLoading(true);
+  //     const res = await axios.post(`${BASE_URL}/auth/login`, {
+  //       email,
+  //       password,
+  //     });
+  //     let userInfo = res.data;
+  //     console.log(userInfo);
+  //     setUserInfo(userInfo);
+  //     AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
+  //     setIsLoading(false);
+  //     navigation.navigate("AdminDashboard");
+  //   } catch (e) {
+  //     console.error(`login error wrong credential${e}`);
+  //     setIsLoading(false);
+  //   }
+  // };
 
+  // Temporary login function for testing
   const handleLogin = () => {
-    if (!email || !password) {
-      alert("Please fill in your username and password.");
-     
-      return;
-    } else if (username.length < 5 || password.length < 5) {
-      alert("Username and password must be at least 5 characters long.");
-    
-      return;
-    }
-    
-    if (username === "Kappy" && password === "Kappy") {
-      
+    if (email === "Kappy" && password === "Kappy") {
       navigation.navigate("AdminDashboard");
-    }
-      
-
-    else {
-      // Handle incorrect login credentials or show an error message
-     navigation.navigate("UserDashboard");
+    } else {
+      navigation.navigate("UserDashboard");
     }
   };
 
   const handleCreateAccount = () => {
     navigation.navigate("Signup");
-
-    
   };
 
   return (
-    <View style={{ flex: 1, alignItems: "center" }}>
-      <Spinner visible={isLoading}/>
+    <View style={styles.container}>
+      <Spinner visible={isLoading} />
+
       <Image
         source={require("../../assets/images/bee4.png")}
-        style={{ marginTop: 200, width: 100, height: 100 }}
+        style={styles.logo}
       />
 
-      
-
-      <Text
-        style={{
-          fontSize: 42,
-          fontWeight: "bold",
-          color: "#3c444c",
-          marginTop: 44,
-          marginBottom: 40,
-        }}
-      >
-        Nectaus App 🐝
-      </Text>
-
-     
+      <Text style={styles.appTitle}>Nectaus App 🐝</Text>
 
       <TextInput
         placeholder="Username"
         value={email}
         onChangeText={(text) => setEmail(text)}
-        style={{
-          borderWidth: 1,
-          borderColor: "gray",
-          borderRadius: 8,
-          width: "80%",
-          padding: 10,
-          fontSize: 16,
-          marginTop: 10,
-        }}
+        style={styles.input}
       />
 
       <TextInput
@@ -112,58 +70,82 @@ const Login = ({ navigation }) => {
         value={password}
         onChangeText={(text) => setPassword(text)}
         secureTextEntry
-        style={{
-          borderWidth: 1,
-          borderColor: "gray",
-          borderRadius: 8,
-          width: "80%",
-          padding: 10,
-          fontSize: 16,
-          marginTop: 10,
-        }}
+        style={styles.input}
       />
 
       <TouchableOpacity
-        onPress={()=>{login(email,password)}}
-        style={{
-      backgroundColor: "#3498db",
-          borderRadius: 18,
-          paddingVertical: 18,
-          width: "80%",
-          alignItems: "center",
-          marginTop: 20,
-        }}
+        onPress={handleLogin}
+        style={styles.loginButton}
       >
-        <Text style={{ fontSize: 18, color: "#fff", fontWeight: "700" }}>
-          Login
-        </Text>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-      
-      
-	  <Text style={{ fontSize: 18, color: "black", fontWeight: "700" }}>
-        OR
-      </Text>
-	  
+
+      <Text style={styles.orText}>OR</Text>
+
       <TouchableOpacity
         onPress={handleCreateAccount}
-        style={{
-          backgroundColor: "#3498db",
-          borderRadius: 18,
-          paddingVertical: 18,
-          width: "80%",
-          alignItems: "center",
-          marginTop: 10,
-        }}
+        style={styles.createAccountButton}
       >
-        <Text style={{ fontSize: 18, color: "#fff", fontWeight: "700" }}>
-          Create Account
-        </Text>
+        <Text style={styles.buttonText}>Create Account</Text>
       </TouchableOpacity>
-	  
     </View>
   );
 };
 
-export default Login;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    top: -50,
+  },
+  logo: {
+    marginTop: 200,
+    width: 100,
+    height: 100,
+  },
+  appTitle: {
+    fontSize: 42,
+    fontWeight: "bold",
+    color: "#3c444c",
+    marginTop: 44,
+    marginBottom: 40,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 8,
+    width: "80%",
+    padding: 10,
+    fontSize: 16,
+    marginTop: 10,
+  },
+  loginButton: {
+    backgroundColor: "#3498db",
+    borderRadius: 18,
+    paddingVertical: 18,
+    width: "80%",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "700",
+  },
+  orText: {
+    fontSize: 18,
+    color: "black",
+    fontWeight: "700",
+    marginTop: 10,
+  },
+  createAccountButton: {
+    backgroundColor: "#3498db",
+    borderRadius: 18,
+    paddingVertical: 18,
+    width: "80%",
+    alignItems: "center",
+    marginTop: 10,
+  },
+});
 
-const styles = StyleSheet.create({});
+export default Login;
