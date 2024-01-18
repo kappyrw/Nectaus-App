@@ -73,8 +73,11 @@ const AddCard = ({ navigation }) => {
       setIsLoading(false);
       navigation.navigate("DisplayCard");
     } catch (e) {
-      console.error(`register error of creating hive ${e}`);
-      setIsLoading(false);
+
+      console.error(`register error of creating hive `,e);
+      setIsLoading(false)
+      
+
     }
   };
 
@@ -120,6 +123,7 @@ const AddCard = ({ navigation }) => {
       );
     });
   };
+
 
   const updateLocalHive = (id) => {
     db.transaction(tx => {
@@ -250,18 +254,23 @@ const AddCard = ({ navigation }) => {
       <Text style={styles.title}>Create a New Hive </Text>
       <Spinner visible={isLoading} />
 
+
+      <Spinner visible={isLoading}/>  
+     
+      
+
       <TextInput
         style={styles.input}
         placeholder="Hive SIN"
         value={HiveSN}
         onChangeText={(text) => setHiveSN(text)}
-      />
+        />
       <TextInput
         style={styles.input}
         placeholder="Hive Name"
         value={HiveName}
         onChangeText={(text) => setHiveName(text)}
-      />
+        />
       <TextInput
         style={styles.input}
         placeholder="Device SIN"
@@ -273,40 +282,54 @@ const AddCard = ({ navigation }) => {
         placeholder="Hive Owner"
         value={HiveOwner}
         onChangeText={(text) => setHiveOwner(text)}
-      />
+
+        />
       <TextInput
         style={styles.input}
         placeholder="Hive Dimension"
         value={HiveDimension}
         onChangeText={(text) => setHiveDimension(text)}
-      />
+
+        />
+
+
       <TextInput
         style={styles.input}
         placeholder="Hive Weight"
         value={HiveWeight}
         onChangeText={(text) => setHiveWeight(text)}
-      />
+
+        multiline
+        />
+
       <TextInput
         style={styles.input}
         placeholder="Hive Location"
         value={HiveLocation}
         onChangeText={(text) => setHiveLocation(text)}
-      />
+
+        multiline
+        />
+
       <TextInput
         style={styles.input}
         placeholder="Description"
         value={Description}
         onChangeText={(text) => setDescription(text)}
+
       />
+
 
       <TouchableOpacity style={styles.button} onPress={() => addLocalHive(HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description)}>
         <Text style={styles.buttonText}>Create Local Hive</Text>
       </TouchableOpacity>
 
+
       <View style={styles.localHivesContainer}>
         <Text style={styles.localHivesTitle}>Local Hives:</Text>
         {showHiveData()}
       </View>
+
     </ScrollView>
   );
 };
@@ -329,7 +352,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginBottom: 20,
-    width: '80%',
+    width: '50%',
   },
   update: {
     color: 'blue',
