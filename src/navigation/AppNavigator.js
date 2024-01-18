@@ -25,6 +25,7 @@ import HiveTableScreen from "../screens/HiveTableScreen";
 import { useNavigation } from "@react-navigation/native";
 import DiseaseInfoScreen from "../screens/DiseaseInfoScreen";
 
+
 //i am going to impport all an important files to use in navigation 
 
 
@@ -54,6 +55,8 @@ const AppNavigator = () => {
 				<Stack.Screen name="HiveTableScreen" component={HiveTableScreen} />
 				<Stack.Screen name="Hive1Screen" component={Hive1Screen} />
 				<Stack.Screen name="DiseaseInfoScreen" component={DiseaseInfoScreen} />
+				
+				
 
 
 				
