@@ -38,7 +38,7 @@ const AddCard = ({ navigation }) => {
       setIsLoading(false)
       navigation.navigate("DisplayCard");
     } catch (e) {
-      console.error(`register error of creating hive ${e}`);
+      console.error(`register error of creating hive `,e);
       setIsLoading(false)
       
     }
@@ -90,21 +90,46 @@ const AddCard = ({ navigation }) => {
     );
   })
 }
+    const updateLocalHive=(id)=>
+    {
+      db.transaction(tx => {
+        tx.executeSql('UPDATE   localHives SET HiveSN = ?, HiveName = ?, DeviceSN = ?, HiveOwner = ?, HiveDimension = ?, HiveWeight = ?, HiveLocation = ?, Description = ?  WHERE id=?', [HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description,id],
+        (txObj, resultSet) => {
+          if(resultSet.rowsAffected>0){
+            
+            let existingHives = [...localHives];
+            let indexToUpdate = existingHives.findIndex(hive=> hive.id===id) ;
+            existingHives[indexToUpdate] = [id,HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description]
+            setLocalHives(existingHives);
+        }
+
+        
+      },
+      (txObj, error) => console.log(error)
+    );
+  })
+}
 
 
   console.log("my out localhive", localHives);
 const showHiveData= ()=>{
   return localHives.map((HiveName,index)=>{
     return(
+      <ScrollView>
+
       <View key={index}>
-        <Text>{HiveName?.HiveOwner}</Text>
+        <Text>{HiveName?.DeviceSN}</Text>
         <TouchableOpacity onPress={() => deleteLocalHive(HiveName.id)} >
         <Text >DELETE</Text>
 
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => updateLocalHive(HiveName.id)}>
+          <Text>UPDATE</Text>
+        </TouchableOpacity>
         {/* <Button title="Delete Hive" onPress={() => deleteLocalHive(HiveName.id)}></Button> */}
 
       </View>
+      </ScrollView>
     )
   })
 
@@ -116,20 +141,22 @@ const showHiveData= ()=>{
     
 
       <Spinner visible={isLoading}/>  
+     
+      
       <TextInput
         style={styles.input}
         placeholder="Hive SIN"
         value={HiveSN}
         // onChange={handleChange}
         onChangeText={(text) => setHiveSN(text)}
-      />
+        />
       <TextInput
         style={styles.input}
         placeholder="Hive Name "
         value={HiveName}
         // onChange={handleChange}
         onChangeText={(text) => setHiveName(text)}
-      />
+        />
       <TextInput
         style={styles.input}
         placeholder="Device SIN"
@@ -143,15 +170,14 @@ const showHiveData= ()=>{
         // onChange={handleChange}
         value={HiveOwner}
         onChangeText={(text) => setHiveOwner(text)}
-      />
-      {showHiveData()}
+        />
       <TextInput
         style={styles.input}
         placeholder="Hive Dimension (L*W*H) "
         // onChange={handleChange}
         value={HiveDimension}
         onChangeText={(text) => setHiveDimension(text)}
-      />
+        />
 
       <TextInput
         style={styles.input}
@@ -160,7 +186,7 @@ const showHiveData= ()=>{
         value={HiveWeight}
         onChangeText={(text) => setHiveWeight(text)}
         multiline
-      />
+        />
       <TextInput
         style={styles.input}
         placeholder="Hive Location"
@@ -168,7 +194,7 @@ const showHiveData= ()=>{
         value={HiveLocation}
         onChangeText={(text) => setHiveLocation(text)}
         multiline
-      />
+        />
       <TextInput
         style={styles.input}
         placeholder="Hive Discription"
@@ -176,14 +202,17 @@ const showHiveData= ()=>{
         value={Description}
         onChangeText={(text) => setDescription(text)}
         multiline
-      />
+        />
+       
       <TouchableOpacity style={styles.button} onPress={() => {
-
-        addLocalHive(HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description);
+        
+        // addLocalHive(HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description);
+        addHive(HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description);
       }}>
         <Text>create local hive</Text>
 
       </TouchableOpacity>
+        {showHiveData()}
     
       
     </ScrollView>
@@ -208,7 +237,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginBottom: 20,
-    width: '80%',
+    width: '50%',
   },
   button: {
     backgroundColor: '#3498db',
