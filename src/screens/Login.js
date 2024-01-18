@@ -1,20 +1,32 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Button } from "react-native";
-import React, { useContext,useState } from "react";
-import { AuthContext } from "../context/AuthContext";
-import axios from "axios";
-import Spinner from "react-native-loading-spinner-overlay";
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BASE_URL } from "../config";
-
-// ... Other imports ...
+import axios from 'axios';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { BASE_URL } from '../config';
 
 const Login = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Commented out the API section, please uncomment it when ready to integrate with your API
+  useEffect(() => {
+    checkLoggedInUser();
+  }, []);
+
+  const checkLoggedInUser = async () => {
+    try {
+      const storedUserInfo = await AsyncStorage.getItem('userInfo');
+      if (storedUserInfo) {
+        setUserInfo(JSON.parse(storedUserInfo));
+        navigation.navigate('AdminDashboard');
+      }
+    } catch (error) {
+      console.error('Error checking logged-in user:', error);
+    }
+  };
+
   const login = async (email, password) => {
     try {
       setIsLoading(true);
@@ -25,36 +37,20 @@ const Login = ({ navigation }) => {
       let userInfo = res.data;
       console.log(userInfo);
       setUserInfo(userInfo);
-      AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
+      await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
       setIsLoading(false);
-      navigation.navigate("AdminDashboard");
+      navigation.navigate('AdminDashboard');
     } catch (e) {
-      console.error(`login error wrong credential${e}`);
+      console.error(`Login error wrong credentials: ${e}`);
       setIsLoading(false);
     }
-  };
-
-  // Temporary login function for testing
-  const handleLogin = () => {
-    if (email === "Kappy" && password === "Kappy") {
-      navigation.navigate("AdminDashboard");
-    } else {
-      navigation.navigate("UserDashboard");
-    }
-  };
-
-  const handleCreateAccount = () => {
-    navigation.navigate("Signup");
   };
 
   return (
     <View style={styles.container}>
       <Spinner visible={isLoading} />
 
-      <Image
-        source={require("../../assets/images/bee4.png")}
-        style={styles.logo}
-      />
+      <Image source={require('../../assets/images/bee4.png')} style={styles.logo} />
 
       <Text style={styles.appTitle}>Nectaus App 🐝</Text>
 
@@ -73,19 +69,13 @@ const Login = ({ navigation }) => {
         style={styles.input}
       />
 
-      <TouchableOpacity
-        onPress={()=>login(email, password)}
-        style={styles.loginButton}
-      >
+      <TouchableOpacity onPress={() => login(email, password)} style={styles.loginButton}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
       <Text style={styles.orText}>OR</Text>
 
-      <TouchableOpacity
-        onPress={handleCreateAccount}
-        style={styles.createAccountButton}
-      >
+      <TouchableOpacity onPress={() => navigation.navigate('Signup')} style={styles.createAccountButton}>
         <Text style={styles.buttonText}>Create Account</Text>
       </TouchableOpacity>
     </View>
@@ -95,7 +85,7 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     top: -50,
   },
   logo: {
@@ -105,45 +95,45 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontSize: 42,
-    fontWeight: "bold",
-    color: "#3c444c",
+    fontWeight: 'bold',
+    color: '#3c444c',
     marginTop: 44,
     marginBottom: 40,
   },
   input: {
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: 'gray',
     borderRadius: 8,
-    width: "80%",
+    width: '80%',
     padding: 10,
     fontSize: 16,
     marginTop: 10,
   },
   loginButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: '#3498db',
     borderRadius: 18,
     paddingVertical: 18,
-    width: "80%",
-    alignItems: "center",
+    width: '80%',
+    alignItems: 'center',
     marginTop: 20,
   },
   buttonText: {
     fontSize: 18,
-    color: "#fff",
-    fontWeight: "700",
+    color: '#fff',
+    fontWeight: '700',
   },
   orText: {
     fontSize: 18,
-    color: "black",
-    fontWeight: "700",
+    color: 'black',
+    fontWeight: '700',
     marginTop: 10,
   },
   createAccountButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: '#3498db',
     borderRadius: 18,
     paddingVertical: 18,
-    width: "80%",
-    alignItems: "center",
+    width: '80%',
+    alignItems: 'center',
     marginTop: 10,
   },
 });

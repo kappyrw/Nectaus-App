@@ -1,9 +1,20 @@
-// AnalyticsScreen.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
 import { BarChart, PieChart, LineChart, ProgressChart } from 'react-native-chart-kit';
 import { useNavigation } from '@react-navigation/native';
 
+const chartConfig = {
+  backgroundGradientFrom: '#fff',
+  backgroundGradientTo: '#fff',
+  decimalPlaces: 2,
+  color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
+  barPercentage: 0.8,
+  propsForDots: {
+    r: '6',
+    strokeWidth: '2',
+    stroke: '#ffa726',
+  },
+};
 
 const barChartData = {
   labels: ['Hive 1', 'Hive 2', 'Hive 3', 'Hive 4'],
@@ -37,30 +48,25 @@ const pieChartData = [
   },
 ];
 
-const lineChartData = {
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-  datasets: [
-    {
-      data: [50, 75, 60, 80, 70], // Replace with your actual data
-    },
-  ],
-};
-
 const progressChartData = [0.4, 0.6, 0.8]; // Replace with your actual data
-
-const chartConfig = {
-  backgroundGradientFrom: '#fff',
-  backgroundGradientTo: '#fff',
-  decimalPlaces: 2,
-  color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
-  barPercentage: 0.8,
-};
 
 const AnalyticsScreen = () => {
   const navigation = useNavigation();
+  const [dynamicData, setDynamicData] = useState([50, 75, 60, 80, 70]);
+
+  useEffect(() => {
+    // Simulate real-time data update (replace with actual data fetching logic)
+    const interval = setInterval(() => {
+      // Generate random data for illustration purposes
+      const newDataPoint = Math.floor(Math.random() * 100);
+      setDynamicData((prevData) => [...prevData.slice(1), newDataPoint]);
+    }, 3000); // Update every 3 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const navigateToHome = () => {
-    navigation.navigate('WelcomeScreen'); // Update with the correct screen name
+    navigation.navigate('Login'); // Update with the correct screen name
   };
 
   return (
@@ -68,6 +74,32 @@ const AnalyticsScreen = () => {
       <ScrollView>
         <View style={styles.container}>
           <Text style={styles.title}>Hive Performance Analytics</Text>
+
+          {/* Dynamic Line Chart */}
+          <View style={styles.chartContainer}>
+            <Text style={styles.chartTitle}>Dynamic Line Chart</Text>
+            <LineChart
+              style={styles.chart}
+              data={{
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [
+                  {
+                    data: dynamicData,
+                  },
+                ],
+              }}
+              width={350}
+              height={200}
+              yAxisSuffix="%"
+              chartConfig={chartConfig}
+              bezier
+              style={{
+                marginVertical: 8,
+                borderRadius: 16,
+              }}
+            />
+            <Text style={styles.legend}>Legend: Blue - Trend</Text>
+          </View>
 
           {/* Bar Chart */}
           <View style={styles.chartContainer}>
@@ -100,20 +132,6 @@ const AnalyticsScreen = () => {
             <Text style={styles.legend}>Legend: Red - Hive 1, Green - Hive 2, Purple - Hive 3, Orange - Hive 4</Text>
           </View>
 
-          {/* Line Chart */}
-          <View style={styles.chartContainer}>
-            <Text style={styles.chartTitle}>Line Chart</Text>
-            <LineChart
-              style={styles.chart}
-              data={lineChartData}
-              width={350}
-              height={200}
-              yAxisSuffix="%"
-              chartConfig={chartConfig}
-            />
-            <Text style={styles.legend}>Legend: Blue - Trend</Text>
-          </View>
-
           {/* Progress Chart */}
           <View style={styles.chartContainer}>
             <Text style={styles.chartTitle}>Progress Chart</Text>
@@ -129,7 +147,7 @@ const AnalyticsScreen = () => {
 
           {/* Button to navigate back to home */}
           <TouchableOpacity style={styles.button} onPress={navigateToHome}>
-            <Text style={styles.buttonText}>Go Back to Home</Text>
+            <Text style={styles.buttonText}>Go Back to Login</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

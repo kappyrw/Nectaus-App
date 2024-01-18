@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, ImageBackground, Button } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AdminDashboard = ({ navigation }) => {
   const [isMenuVisible, setMenuVisibility] = useState(false);
@@ -27,6 +28,13 @@ const AdminDashboard = ({ navigation }) => {
   const handleUpdates = () => {
     navigation.navigate('RecipeList');
     toggleMenu();
+  };
+
+  const handleLogout = async () => {
+    // Clear user information from AsyncStorage
+    await AsyncStorage.removeItem('userInfo');
+    // Navigate to the login screen
+    navigation.navigate('Login');
   };
 
   useEffect(() => {
@@ -57,7 +65,7 @@ const AdminDashboard = ({ navigation }) => {
         <TouchableOpacity style={styles.hamburgerButton} onPress={toggleMenu}>
           <Text style={styles.hamburgerButtonText}>☰</Text>
         </TouchableOpacity>
-        
+
         <Modal
           animationType="slide"
           transparent={true}
@@ -76,13 +84,14 @@ const AdminDashboard = ({ navigation }) => {
             <TouchableOpacity style={styles.menuItem} onPress={viewAnalytics}>
               <Text style={styles.menuItemText}>View Analytics</Text>
             </TouchableOpacity>
+
             <TouchableOpacity style={styles.menuItem} onPress={handleUpdates}>
               <Text style={styles.menuItemText}>Hives info</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={handleUpdates}>
-              <Text style={styles.menuItemText}>Hives info</Text>
+            <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+              <Text style={styles.menuItemText}>Logout</Text>
             </TouchableOpacity>
-            
+
             {/* Additional menu items for other functionalities */}
             <Button title="Close" onPress={toggleMenu} />
           </View>
@@ -109,11 +118,10 @@ const styles = StyleSheet.create({
     top: 60,
     left: 20,
     zIndex: 1,
-    
   },
   hamburgerButtonText: {
     fontSize: 60,
-    color: '#000000', // Change the color to black
+    color: '#000000',
   },
   menuContainer: {
     flex: 1,
@@ -140,4 +148,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
 export default AdminDashboard;
