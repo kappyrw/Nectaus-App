@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Image, Linking, ScrollView } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { AntDesign } from '@expo/vector-icons';
@@ -11,6 +11,17 @@ const WelcomeScreen = ({ navigation }) => {
     navigation.navigate("ChatScreen");
   };
 
+  const handlePhoneCall = () => {
+    // Use Linking to initiate a phone call
+    Linking.openURL("tel:+250781718040");
+  };
+  
+  const handleYoutube = () => {
+    // Replace 'your_youtube_channel_url' with the actual URL of your YouTube channel
+    const youtubeChannelUrl = 'https://youtu.be/rs44gQTAEso?si=wrsqnbj2X57XMLEs';
+    Linking.openURL(youtubeChannelUrl);
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       setBackgroundImageIndex((prevIndex) => (prevIndex % 2) + 1);
@@ -19,69 +30,52 @@ const WelcomeScreen = ({ navigation }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // const getBackgroundImage = () => {
-  //   switch (backgroundImageIndex) {
-  //     case 1:
-  //       return 0;
-  //     // case 2:
-  //     //   return require("../../assets/images/bee12.jpg");
-  //     // default:
-  //     //   return require("../../assets/images/bee11.jpg");
-  //   }
-  // };
-
-  const handleExplore = () => {
-    navigation.navigate("Login");
-  };
-
   return (
-    // <ImageBackground source={getBackgroundImage()} style={styles.backgroundImage} >
-      <View style={styles.container}>
-       
+    <ScrollView style={{ flex: 1 }}>
+     
+        <View style={styles.container}>
+          <Image source={require("../../assets/images/honey.png")} style={styles.logo} />
 
-        <Image source={require("../../assets/images/honey.png")} style={styles.logo} />
+          <Text style={styles.premiumText}>60K+ Premium Bees</Text>
 
-        <Text style={styles.premiumText}>60K+ Premium Bees</Text>
+          <Text style={styles.appTitle}>Nectaus App 🐝</Text>
 
-        <Text style={styles.appTitle}>Nectaus App 🐝</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")} style={styles.exploreButton}>
+            <Text style={styles.buttonText}>Explore more</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleExplore} style={styles.exploreButton}>
-          <Text style={styles.buttonText}>Explore more</Text>
-        </TouchableOpacity>
-
-        <View style={styles.socialIcons}>
-          <TouchableOpacity style={styles.iconButton} onPress={handleChat}>
-           
-          <AntDesign name="message1" size={30} color="#3b5998" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <FontAwesome5 name="twitter" size={30} color="#1da1f2" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <FontAwesome5 name="instagram" size={30} color="#e4405f" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <FontAwesome5 name="tiktok" size={30} color="#69c9d0" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <FontAwesome5 name="youtube" size={30} color="#ff0000" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <FontAwesome5 name="phone" size={30} color="black" />
-          </TouchableOpacity>
+          <View style={styles.socialIcons}>
+            <TouchableOpacity style={styles.iconButton} onPress={handleChat}>
+              <AntDesign name="message1" size={30} color="#3b5998" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <FontAwesome5 name="twitter" size={30} color="#1da1f2" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <FontAwesome5 name="instagram" size={30} color="#e4405f" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <FontAwesome5 name="tiktok" size={30} color="#69c9d0" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton} onPress={handleYoutube}>
+              <FontAwesome5 name="youtube" size={30} color="#ff0000" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton} onPress={handlePhoneCall}>
+              <FontAwesome5 name="phone" size={30} color="black" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-   
+     
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    top:-28,
+    top: -28,
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    
   },
   chatButton: {
     backgroundColor: "#3498db",
@@ -96,7 +90,6 @@ const styles = StyleSheet.create({
   logo: {
     marginTop: -10,
     marginBottom: 10,
-    
   },
   premiumText: {
     color: "#f96163",
@@ -117,7 +110,7 @@ const styles = StyleSheet.create({
     width: "80%",
     alignItems: "center",
     marginTop: -23,
-    marginBottom:20,
+    marginBottom: 20,
   },
   buttonText: {
     fontSize: 20,

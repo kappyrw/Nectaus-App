@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -47,6 +47,8 @@ const Login = ({ navigation }) => {
   };
 
   return (
+    <ScrollView style={{ flex: 1 }}>
+    
     <View style={styles.container}>
       <Spinner visible={isLoading} />
 
@@ -79,6 +81,7 @@ const Login = ({ navigation }) => {
         <Text style={styles.buttonText}>Create Account</Text>
       </TouchableOpacity>
     </View>
+    </ScrollView>
   );
 };
 

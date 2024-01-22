@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, AppTextInput } from 'react-native';
+import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, AppTextInput ,ScrollView} from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from "axios";
 import { Formik } from 'formik';
@@ -93,6 +93,7 @@ const Signup = ({ navigation }) => {
   };
 
   return (
+    <ScrollView style={{ flex: 1 }}>
     <View style={styles.container}>
       <Spinner visible={isLoading} />
       <Text style={styles.title}>Create an Account 🐝</Text>
@@ -174,6 +175,7 @@ const Signup = ({ navigation }) => {
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
+    </ScrollView>
   );
 };
 

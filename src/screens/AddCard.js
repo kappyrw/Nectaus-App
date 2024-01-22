@@ -1,53 +1,58 @@
 // AddCard.js
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { BASE_URL } from "../config";
-import Spinner from "react-native-loading-spinner-overlay";
+import { BASE_URL } from '../config';
+import Spinner from 'react-native-loading-spinner-overlay';
 import DisplayCard from './DisplayCard';
-import * as SQLite from "expo-sqlite";
+import * as SQLite from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 
 const AddCard = ({ navigation }) => {
   const db = SQLite.openDatabase('localHive.db');
 
-  const [HiveSN, setHiveSN] = useState('');
-  const [HiveName, setHiveName] = useState('');
-  const [DeviceSN, setDeviceSN] = useState('');
-  const [HiveOwner, setHiveOwner] = useState('');
-  const [HiveDimension, setHiveDimension] = useState('');
-  const [HiveWeight, setHiveWeight] = useState('');
-  const [HiveLocation, setHiveLocation] = useState('');
-  const [Description, setDescription] = useState('');
-  const [UpdateHiveSN, setUpdateHiveSN] = useState('');
-  const [UpdateHiveName, setUpdateHiveName] = useState('');
-  const [UpdateDeviceSN, setUpdateDeviceSN] = useState('');
-  const [UpdateHiveOwner, setUpdateHiveOwner] = useState('');
-  const [UpdateHiveDimension, setUpdateHiveDimension] = useState('');
-  const [UpdateHiveWeight, setUpdateHiveWeight] = useState('');
-  const [UpdateHiveLocation, setUpdateHiveLocation] = useState('');
-  const [UpdateDescription, setUpdateDescription] = useState('');
+  const initialState = {
+    HiveSN: '',
+    HiveName: '',
+    DeviceSN: '',
+    HiveOwner: '',
+    HiveDimension: '',
+    HiveWeight: '',
+    HiveLocation: '',
+    Description: '',
+  };
+
+  const [formData, setFormData] = useState(initialState);
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [localHives, setLocalHives] = useState([]);
   const [updatingHiveId, setUpdatingHiveId] = useState(null);
 
   useEffect(() => {
-    db.transaction(tx => {
-      tx.executeSql('CREATE TABLE IF NOT EXISTS localHives(id INTEGER PRIMARY KEY AUTOINCREMENT,HiveSN INTEGER, HiveName TEXT, DeviceSN TEXT, HiveOwner TEXT, HiveDimension INTEGER, HiveWeight TEXT, HiveLocation TEXT, Description TEXT)');
+    db.transaction((tx) => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS localHives(id INTEGER PRIMARY KEY AUTOINCREMENT,HiveSN INTEGER, HiveName TEXT, DeviceSN TEXT, HiveOwner TEXT, HiveDimension INTEGER, HiveWeight TEXT, HiveLocation TEXT, Description TEXT)'
+      );
     });
 
-    fetchLocalHives(); // Fetch local hives on initial mount
+    fetchLocalHives();
   }, []);
 
-  // Fetch local hives every time the screen is focused
   useFocusEffect(() => {
     fetchLocalHives();
   });
 
   const fetchLocalHives = () => {
-    db.transaction(tx => {
+    db.transaction((tx) => {
       tx.executeSql(
         'SELECT * FROM localHives',
         [],
@@ -59,194 +64,180 @@ const AddCard = ({ navigation }) => {
     });
   };
 
-  const addHive = async (HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description) => {
-    try {
-      setIsLoading(true);
-      const res = await axios.post(`${BASE_URL}/hive/create`, {
-        HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description
-      });
-      console.log(res.data);
-      let userInfo = res.data;
-      setUserInfo(userInfo);
+  const handleChange = (name, value) => {
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
+  };
 
-      AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
-      setIsLoading(false);
-      navigation.navigate("DisplayCard");
-    } catch (e) {
+  const handleUpdateClick = (id) => {
+    const hiveToUpdate = localHives.find((hive) => hive.id === id);
 
-      console.error(`register error of creating hive `,e);
-      setIsLoading(false)
-      
-
+    if (hiveToUpdate) {
+      setFormData(hiveToUpdate);
+      setUpdatingHiveId(id);
     }
   };
 
-  const addLocalHive = (HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description) => {
-    db.transaction(tx => {
+  const handleUpdateLocalHive = (id) => {
+    db.transaction((tx) => {
       tx.executeSql(
-        'INSERT INTO localHives(HiveSN , HiveName , DeviceSN , HiveOwner , HiveDimension , HiveWeight , HiveLocation , Description)  values(?,?,?,?,?,?,?,?)',
-        [HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description],
-        (txObj, resultSet) => {
-          let existingHives = [...localHives];
-          existingHives.push({
-            id: resultSet.insertId,
-            HiveSN: HiveSN,
-            HiveName: HiveName,
-            DeviceSN: DeviceSN,
-            HiveOwner: HiveOwner,
-            HiveDimension: HiveDimension,
-            HiveWeight: HiveWeight,
-            HiveLocation: HiveLocation,
-            Description: Description
-          });
-
-          setLocalHives(existingHives);
-          setHiveSN(undefined), setHiveName(undefined), setDeviceSN(undefined), setHiveOwner(undefined), setHiveDimension(undefined), setHiveWeight(undefined), setHiveLocation(undefined), setDescription(undefined);
-
-          console.log("my localhive", existingHives);
-        },
-        (txObj, error) => console.log(error)
-      );
-    });
-  };
-
-  const deleteLocalHive = (id) => {
-    db.transaction(tx => {
-      tx.executeSql('DELETE FROM localHives WHERE id=?', [id],
-        (txObj, resultSet) => {
+        'UPDATE localHives SET HiveSN=?, HiveName=?, DeviceSN=?, HiveOwner=?, HiveDimension=?, HiveWeight=?, HiveLocation=?, Description=? WHERE id=?',
+        [
+          formData.HiveSN,
+          formData.HiveName,
+          formData.DeviceSN,
+          formData.HiveOwner,
+          formData.HiveDimension,
+          formData.HiveWeight,
+          formData.HiveLocation,
+          formData.Description,
+          id,
+        ],
+        (_, resultSet) => {
           if (resultSet.rowsAffected > 0) {
-            let existingHives = [...localHives].filter(localHive => localHive.id !== id);
-            setLocalHives(existingHives);
-          }
-        },
-        (txObj, error) => console.log(error)
-      );
-    });
-  };
-
-
-  const updateLocalHive = (id) => {
-    db.transaction(tx => {
-      tx.executeSql('UPDATE localHives SET HiveSN=?, HiveName=?, DeviceSN=?, HiveOwner=?, HiveDimension=?, HiveWeight=?, HiveLocation=?, Description=? WHERE id=?',
-        [UpdateHiveSN, UpdateHiveName, UpdateDeviceSN, UpdateHiveOwner, UpdateHiveDimension, UpdateHiveWeight, UpdateHiveLocation, UpdateDescription, id],
-        (txObj, resultSet) => {
-          if (resultSet.rowsAffected > 0) {
-            let updatedHives = localHives.map(hive => {
+            const updatedHives = localHives.map((hive) => {
               if (hive.id === id) {
-                return {
-                  ...hive,
-                  HiveSN: UpdateHiveSN,
-                  HiveName: UpdateHiveName,
-                  DeviceSN: UpdateDeviceSN,
-                  HiveOwner: UpdateHiveOwner,
-                  HiveDimension: UpdateHiveDimension,
-                  HiveWeight: UpdateHiveWeight,
-                  HiveLocation: UpdateHiveLocation,
-                  Description: UpdateDescription,
-                };
+                return { ...hive, ...formData };
               }
               return hive;
             });
             setLocalHives(updatedHives);
           }
           setUpdatingHiveId(null);
-          setUpdateHiveSN('');
-          setUpdateHiveName('');
-          setUpdateDeviceSN('');
-          setUpdateHiveOwner('');
-          setUpdateHiveDimension('');
-          setUpdateHiveWeight('');
-          setUpdateHiveLocation('');
-          setUpdateDescription('');
+          setFormData(initialState);
         },
-        (txObj, error) => console.log(error)
+        (_, error) => console.log(error)
       );
     });
   };
 
-  const showHiveData = () => {
-    return localHives.map((Hive, index) => {
-      return (
-        <View key={index} style={styles.hiveInfoContainer}>
-          <Text style={styles.hiveInfoText}>Hive SIN: {Hive?.HiveSN}</Text>
-          <Text style={styles.hiveInfoText}>Hive Name: {Hive?.HiveName}</Text>
-          <Text style={styles.hiveInfoText}>Device SIN: {Hive?.DeviceSN}</Text>
-          <Text style={styles.hiveInfoText}>Hive Owner: {Hive?.HiveOwner}</Text>
-          <Text style={styles.hiveInfoText}>Hive Dimension: {Hive?.HiveDimension}</Text>
-          <Text style={styles.hiveInfoText}>Hive Weight: {Hive?.HiveWeight}</Text>
-          <Text style={styles.hiveInfoText}>Hive Location: {Hive?.HiveLocation}</Text>
-          <Text style={styles.hiveInfoText}>Hive Description: {Hive?.Description}</Text>
+  const addHive = async () => {
+    try {
+      setIsLoading(true);
+      const res = await axios.post(`${BASE_URL}/hive/create`, formData);
+      console.log(res.data);
+      let userInfo = res.data;
+      setUserInfo(userInfo);
 
-          {updatingHiveId === Hive.id ? (
+      AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
+      setIsLoading(false);
+      navigation.navigate('DisplayCard');
+    } catch (e) {
+      console.error('Error creating hive: ', e);
+      setIsLoading(false);
+    }
+  };
+
+  const addLocalHive = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'INSERT INTO localHives(HiveSN , HiveName , DeviceSN , HiveOwner , HiveDimension , HiveWeight , HiveLocation , Description)  values(?,?,?,?,?,?,?,?)',
+        Object.values(formData),
+        (_, resultSet) => {
+          let existingHives = [...localHives];
+          existingHives.push({
+            id: resultSet.insertId,
+            ...formData,
+          });
+
+          setLocalHives(existingHives);
+          setFormData(initialState);
+
+          console.log('My local hives', existingHives);
+        },
+        (_, error) => console.log(error)
+      );
+    });
+  };
+
+  const deleteLocalHive = (id) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'DELETE FROM localHives WHERE id=?',
+        [id],
+        (_, resultSet) => {
+          if (resultSet.rowsAffected > 0) {
+            let existingHives = [...localHives].filter(
+              (localHive) => localHive.id !== id
+            );
+            setLocalHives(existingHives);
+          }
+        },
+        (_, error) => console.log(error)
+      );
+    });
+  };
+
+  const renderHivesInGrid = () => {
+    const grid = [];
+    const rowSize = 2; // Set the number of columns per row
+
+    for (let i = 0; i < localHives.length; i += rowSize) {
+      const row = localHives.slice(i, i + rowSize);
+      const rowElements = row.map((hive) => (
+        <View
+          key={hive.id}
+          style={[
+            styles.hiveInfoContainer,
+            hive.id === updatingHiveId ? styles.updatedHive : null,
+          ]}
+        >
+          {Object.entries(hive).map(([key, value]) => (
+            <Text key={key} style={styles.hiveInfoText}>
+              {key}: {value}
+            </Text>
+          ))}
+
+          {updatingHiveId === hive.id ? (
             <View>
-              <TextInput
-                style={styles.input}
-                placeholder="Update Hive SIN"
-                value={UpdateHiveSN}
-                onChangeText={(text) => setUpdateHiveSN(text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Update Hive Name"
-                value={UpdateHiveName}
-                onChangeText={(text) => setUpdateHiveName(text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Update Device SIN"
-                value={UpdateDeviceSN}
-                onChangeText={(text) => setUpdateDeviceSN(text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Update Hive Owner"
-                value={UpdateHiveOwner}
-                onChangeText={(text) => setUpdateHiveOwner(text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Update Hive Dimension"
-                value={UpdateHiveDimension}
-                onChangeText={(text) => setUpdateHiveDimension(text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Update Hive Weight"
-                value={UpdateHiveWeight}
-                onChangeText={(text) => setUpdateHiveWeight(text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Update Hive Location"
-                value={UpdateHiveLocation}
-                onChangeText={(text) => setUpdateHiveLocation(text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Update Description"
-                value={UpdateDescription}
-                onChangeText={(text) => setUpdateDescription(text)}
-              />
+              {Object.entries(initialState).map(([key, value]) => (
+                <TextInput
+                  key={key}
+                  style={styles.input}
+                  placeholder={`Update ${key}`}
+                  value={formData[key]}
+                  onChangeText={(text) => handleChange(key, text)}
+                />
+              ))}
 
-              <TouchableOpacity onPress={() => updateLocalHive(Hive.id)}>
+              <TouchableOpacity
+                onPress={() => handleUpdateLocalHive(hive.id)}
+                style={styles.updateButton}
+              >
                 <Text style={styles.buttonText}>Update</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <View>
-              <TouchableOpacity onPress={() => deleteLocalHive(Hive.id)}>
-                <Text style={styles.deleteButton}>DELETE</Text>
+              <TouchableOpacity
+                onPress={() => deleteLocalHive(hive.id)}
+                style={styles.deleteButton}
+              >
+                <Text style={styles.buttonText}>Delete</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => setUpdatingHiveId(Hive.id)}>
-                <Text style={styles.update}>Update</Text>
+              <TouchableOpacity
+                onPress={() => handleUpdateClick(hive.id)}
+                style={styles.updateButton}
+              >
+                <Text style={styles.buttonText}>Update</Text>
               </TouchableOpacity>
             </View>
           )}
 
-          <Image source={require('../../assets/images/bee11.jpg')} style={{ width: 100, height: 100, resizeMode: 'cover', borderRadius: 8, marginTop: 10 }} />
+          <Image
+            source={require('../../assets/images/bee11.jpg')}
+            style={styles.hiveImage}
+          />
+        </View>
+      ));
+
+      grid.push(
+        <View key={i} style={styles.rowContainer}>
+          {rowElements}
         </View>
       );
-    });
+    }
+
+    return grid;
   };
 
   return (
@@ -254,82 +245,28 @@ const AddCard = ({ navigation }) => {
       <Text style={styles.title}>Create a New Hive </Text>
       <Spinner visible={isLoading} />
 
-
-      <Spinner visible={isLoading}/>  
-     
-      
-
-      <TextInput
-        style={styles.input}
-        placeholder="Hive SIN"
-        value={HiveSN}
-        onChangeText={(text) => setHiveSN(text)}
+      {Object.entries(initialState).map(([key, value]) => (
+        <TextInput
+          key={key}
+          style={styles.input}
+          placeholder={`Enter ${key}`}
+          value={formData[key]}
+          onChangeText={(text) => handleChange(key, text)}
         />
-      <TextInput
-        style={styles.input}
-        placeholder="Hive Name"
-        value={HiveName}
-        onChangeText={(text) => setHiveName(text)}
-        />
-      <TextInput
-        style={styles.input}
-        placeholder="Device SIN"
-        value={DeviceSN}
-        onChangeText={(text) => setDeviceSN(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Hive Owner"
-        value={HiveOwner}
-        onChangeText={(text) => setHiveOwner(text)}
+      ))}
 
-        />
-      <TextInput
-        style={styles.input}
-        placeholder="Hive Dimension"
-        value={HiveDimension}
-        onChangeText={(text) => setHiveDimension(text)}
+      <TouchableOpacity style={styles.button} onPress={addHive}>
+        <Text style={styles.buttonText}>Create Hive</Text>
+      </TouchableOpacity>
 
-        />
-
-
-      <TextInput
-        style={styles.input}
-        placeholder="Hive Weight"
-        value={HiveWeight}
-        onChangeText={(text) => setHiveWeight(text)}
-
-        multiline
-        />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Hive Location"
-        value={HiveLocation}
-        onChangeText={(text) => setHiveLocation(text)}
-
-        multiline
-        />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Description"
-        value={Description}
-        onChangeText={(text) => setDescription(text)}
-
-      />
-
-
-      <TouchableOpacity style={styles.button} onPress={() => addLocalHive(HiveSN, HiveName, DeviceSN, HiveOwner, HiveDimension, HiveWeight, HiveLocation, Description)}>
+      <TouchableOpacity style={styles.button} onPress={addLocalHive}>
         <Text style={styles.buttonText}>Create Local Hive</Text>
       </TouchableOpacity>
 
-
       <View style={styles.localHivesContainer}>
         <Text style={styles.localHivesTitle}>Local Hives:</Text>
-        {showHiveData()}
+        {renderHivesInGrid()}
       </View>
-
     </ScrollView>
   );
 };
@@ -352,13 +289,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginBottom: 20,
-    width: '50%',
+    width: '80%',
   },
-  update: {
-    color: 'blue',
-    marginTop: 5,
-  },
-  
   button: {
     backgroundColor: '#3498db',
     borderRadius: 18,
@@ -391,9 +323,43 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
   },
+  hiveImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'cover',
+    borderRadius: 8,
+    marginTop: 10,
+  },
   deleteButton: {
-    color: 'red',
+    backgroundColor: 'red',
+    borderRadius: 18,
+    paddingVertical: 18,
+    width: '80%',
+    alignItems: 'center',
     marginTop: 5,
+    borderWidth: 1,
+    color: 'white',
+  },
+  updateButton: {
+    backgroundColor: '#3498db',
+    borderRadius: 18,
+    paddingVertical: 18,
+    width: '80%',
+    alignItems: 'center',
+    marginTop: 5,
+    borderWidth: 1,
+    color: 'white',
+  },
+  alternateRow: {
+    backgroundColor: '#dfe6e9',
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  updatedHive: {
+    backgroundColor: '#f8f9fa',
   },
 });
 
