@@ -1,13 +1,17 @@
+
 //addcard
 import React, { useEffect, useState, useRef } from 'react';
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import axios from 'axios';
+
 import { BASE_URL } from "../config";
 import Spinner from "react-native-loading-spinner-overlay";
 // import DisplayCard from './DisplayCard';
 import * as SQLite from "expo-sqlite";
+
 import { useFocusEffect } from '@react-navigation/native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -22,6 +26,7 @@ Notifications.setNotificationHandler({
 });
 const AddCard = ({ navigation }) => {
   const db = SQLite.openDatabase('localHive.db');
+
   const [haveFetchedHives, setHaveFetchedHives] = useState(false);
   const [HiveSN, setHiveSN] = useState('');
   const [HiveName, setHiveName] = useState('');
@@ -40,6 +45,7 @@ const AddCard = ({ navigation }) => {
   const [UpdateHiveLocation, setUpdateHiveLocation] = useState('');
   const [UpdateDescription, setUpdateDescription] = useState('');
   const [access_token, Setaccess_token] = useState(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const [localHives, setLocalHives] = useState([]);
   const [updatingHiveId, setUpdatingHiveId] = useState(null);
@@ -110,11 +116,13 @@ const AddCard = ({ navigation }) => {
   }, [access_token]);
   // sqlite DB create
   useEffect(() => {
+
     db.transaction(tx => {
       tx.executeSql('CREATE TABLE IF NOT EXISTS localHivesV1(id INTEGER PRIMARY KEY AUTOINCREMENT,HiveSN INTEGER, HiveName TEXT, DeviceSN TEXT,  HiveDimension INTEGER, HiveWeight TEXT, HiveLocation TEXT, Description TEXT)');
+
     });
 
-    fetchLocalHives(); // Fetch local hives on initial mount
+    fetchLocalHives();
   }, []);
 
   const updateRemoteHive = async (hiveId) => {
@@ -209,13 +217,14 @@ const AddCard = ({ navigation }) => {
 
 
   // Fetch local hives every time the screen is focused
+
   useFocusEffect(() => {
     fetchLocalHives();
   });
 
 
   const fetchLocalHives = () => {
-    db.transaction(tx => {
+    db.transaction((tx) => {
       tx.executeSql(
         'SELECT * FROM localHivesV1',
         [],
@@ -226,6 +235,7 @@ const AddCard = ({ navigation }) => {
       );
     });
   };
+
 
   const addHive = async (HiveSN, HiveName, DeviceSN, HiveDimension, HiveWeight, HiveLocation, Description) => {
     setIsLoading(true);
@@ -252,12 +262,14 @@ const AddCard = ({ navigation }) => {
       console.error(`register error of creating hive `, e);
 
 
+
     }
     finally {
       setIsLoading(false); // Set loading to false regardless of success or error
     }
 
   };
+
 
 
 
@@ -289,8 +301,9 @@ const AddCard = ({ navigation }) => {
           }
           console.log("my localhive", existingHives);
           setIsLoading(false);
+
         },
-        (txObj, error) => console.log(error)
+        (_, error) => console.log(error)
       );
     });
   };
@@ -299,18 +312,24 @@ const AddCard = ({ navigation }) => {
 
 
   const deleteLocalHive = (id) => {
-    db.transaction(tx => {
-      tx.executeSql('DELETE FROM localHives WHERE id=?', [id],
-        (txObj, resultSet) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'DELETE FROM localHives WHERE id=?',
+        [id],
+        (_, resultSet) => {
           if (resultSet.rowsAffected > 0) {
-            let existingHives = [...localHives].filter(localHive => localHive.id !== id);
+            let existingHives = [...localHives].filter(
+              (localHive) => localHive.id !== id
+            );
             setLocalHives(existingHives);
           }
         },
-        (txObj, error) => console.log(error)
+          (txObj, error) => console.log(error)
       );
     });
   };
+
+      
   const deleteAllFromLocalHive = () => {
     db.transaction((tx) => {
       tx.executeSql('DELETE FROM localHivesV1;', [], (_, result) => {
@@ -424,24 +443,42 @@ const AddCard = ({ navigation }) => {
               />
 
               <TouchableOpacity onPress={() => updateLocalHive(Hive.id)}>
+
                 <Text style={styles.buttonText}>Update</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <View>
-              <TouchableOpacity onPress={() => deleteLocalHive(Hive.id)}>
-                <Text style={styles.deleteButton}>DELETE</Text>
+              <TouchableOpacity
+                onPress={() => deleteLocalHive(hive.id)}
+                style={styles.deleteButton}
+              >
+                <Text style={styles.buttonText}>Delete</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => setUpdatingHiveId(Hive.id)}>
-                <Text style={styles.update}>Update</Text>
+              <TouchableOpacity
+                onPress={() => handleUpdateClick(hive.id)}
+                style={styles.updateButton}
+              >
+                <Text style={styles.buttonText}>Update</Text>
               </TouchableOpacity>
             </View>
           )}
 
-          <Image source={require('../../assets/images/bee11.jpg')} style={{ width: 100, height: 100, resizeMode: 'cover', borderRadius: 8, marginTop: 10 }} />
+          <Image
+            source={require('../../assets/images/bee11.jpg')}
+            style={styles.hiveImage}
+          />
+        </View>
+      ));
+
+      grid.push(
+        <View key={i} style={styles.rowContainer}>
+          {rowElements}
         </View>
       );
-    });
+    }
+
+    return grid;
   };
 
 
@@ -549,6 +586,17 @@ const AddCard = ({ navigation }) => {
       <Spinner visible={isLoading} />
 
 
+      {Object.entries(initialState).map(([key, value]) => (
+        <TextInput
+          key={key}
+          style={styles.input}
+          placeholder={`Enter ${key}`}
+          value={formData[key]}
+          onChangeText={(text) => handleChange(key, text)}
+        />
+      ))}
+
+
       <Spinner visible={isLoading} />
 
 
@@ -607,6 +655,11 @@ const AddCard = ({ navigation }) => {
 
       />
 
+      <TouchableOpacity style={styles.button} onPress={addHive}>
+        <Text style={styles.buttonText}>Create Hive</Text>
+      </TouchableOpacity>
+
+
 
       <TouchableOpacity style={styles.button} onPress={() => {
         // addLocalHive(HiveSN, HiveName, DeviceSN, HiveDimension, HiveWeight, HiveLocation, Description);
@@ -614,6 +667,7 @@ const AddCard = ({ navigation }) => {
 
       }
       }>
+
         <Text style={styles.buttonText}>Create Local Hive</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => {
@@ -628,17 +682,19 @@ const AddCard = ({ navigation }) => {
         <Text style={styles.buttonText}>send notification</Text>
       </TouchableOpacity>
 
-
       <View style={styles.localHivesContainer}>
         <Text style={styles.localHivesTitle}>Local Hives:</Text>
+
+        {renderHivesInGrid()}
+
         {showHiveDataLocally()}
       </View>
 
       <View style={styles.localHivesContainer}>
         <Text style={styles.localHivesTitle}>Remote  Hives:</Text>
         {showHiveDataRemotelly()}
-      </View>
 
+      </View>
     </ScrollView>
   );
 };
@@ -703,11 +759,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginBottom: 20,
-    width: '50%',
-  },
-  update: {
-    color: 'blue',
-    marginTop: 5,
+    width: '80%',
   },
 
   button: {
@@ -742,9 +794,43 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
   },
+  hiveImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'cover',
+    borderRadius: 8,
+    marginTop: 10,
+  },
   deleteButton: {
-    color: 'red',
+    backgroundColor: 'red',
+    borderRadius: 18,
+    paddingVertical: 18,
+    width: '80%',
+    alignItems: 'center',
     marginTop: 5,
+    borderWidth: 1,
+    color: 'white',
+  },
+  updateButton: {
+    backgroundColor: '#3498db',
+    borderRadius: 18,
+    paddingVertical: 18,
+    width: '80%',
+    alignItems: 'center',
+    marginTop: 5,
+    borderWidth: 1,
+    color: 'white',
+  },
+  alternateRow: {
+    backgroundColor: '#dfe6e9',
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  updatedHive: {
+    backgroundColor: '#f8f9fa',
   },
 });
 
