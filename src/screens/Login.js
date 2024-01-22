@@ -26,7 +26,7 @@ const Login = ({ navigation }) => {
       console.error('Error checking logged-in user:', error);
     }
   };
-
+  console.log("info of loded user ", userInfo?.access_token);
   const login = async (email, password) => {
     try {
       setIsLoading(true);
